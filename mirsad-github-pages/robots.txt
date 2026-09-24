@@ -1,8 +1,0 @@
-# مِرصاد (MIRSAD) — أطلس الهجمات السيبرانية تفاعلياً
-# robots.txt — السماح بفهرسة كاملة للموقع
-
-User-agent: *
-Allow: /
-
-# لا توجد صفحات خاصة بمنع الفهرسة
-Sitemap: https://yassine552.github.io/tofaan-lab/sitemap.xml
